@@ -7,6 +7,7 @@
   <title>Necs Hub</title>
   <link rel="icon" href="slave.png">
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 </head>
 
 <body>
@@ -54,6 +55,9 @@
             </div>
             <button class="fab" onclick="UI.toggleFab()" title="Menu">☰</button>
           </div>
+          <button id="about-toggle" onclick="UI.openAboutModal()" title="About">
+            <span class="material-icons">info</span>
+          </button>
           <button id="theme-toggle" onclick="PageTools.toggleDarkMode()" title="Toggle Dark Mode">🌙</button>
         </div>
       </header>
@@ -115,6 +119,19 @@
     </form>
   </div>
 
+  <!-- About Modal -->
+  <div id="modal-about" class="modal" style="display:none;">
+    <div class="modal-header">
+      <h2><span class="material-icons">info</span> Description </h2>
+      <button class="modal-close" onclick="UI.closeAboutModal()" title="Close">
+        <span class="material-icons">close</span>
+      </button>
+    </div>
+    <div class="about-content" id="about-content">
+      <!-- README content will be injected here -->
+    </div>
+  </div>
+  
   <!-- Iframe viewer -->
   <div id="site-viewer" style="display:none;">
     <button id="close-site" onclick="PageTools.closeSite()">Close</button>
@@ -125,5 +142,6 @@
   <script src="links.json" type="application/json" id="data"></script>
   <script src="hub.js"></script>
 </body>
+
 
 </html>
