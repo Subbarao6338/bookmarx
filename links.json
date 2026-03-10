@@ -2,27 +2,43 @@
   {
     "title": "URL Hub",
     "url": "https://subbarao6338.github.io/Url-Hub/",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://subbarao6338.github.io/Url-Hub/"
+    ]
   },
   {
     "title": "Hugging Face",
     "url": "https://huggingface.co",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://huggingface.co"
+    ]
   },
   {
     "title": "Notion",
     "url": "https://www.notion.so",
-    "category": "Productivity"
+    "category": "Productivity",
+    "urls": [
+      "https://www.notion.so"
+    ]
   },
   {
     "title": "Stremio Web",
     "url": "https://web.stremio.com/#/",
-    "category": "Streaming"
+    "category": "Streaming",
+    "urls": [
+      "https://web.stremio.com/#/",
+      "https://stremio-addons.net/"
+    ]
   },
   {
     "title": "Gemini",
     "url": "https://gemini.google.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://gemini.google.com/"
+    ]
   },
   {
     "title": "Telegram Web",
@@ -33,11 +49,6 @@
       "https://webk.telegram.org/"
     ],
     "category": "Social"
-  },
-  {
-    "title": "Stremio Addons",
-    "url": "https://stremio-addons.net/",
-    "category": "Streaming"
   },
   {
     "title": "Gmail",
@@ -53,7 +64,10 @@
   {
     "title": "NextDNS Logs",
     "url": "https://my.nextdns.io/d893f5/logs",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://my.nextdns.io/d893f5/logs"
+    ]
   },
   {
     "title": "Outlook",
@@ -68,12 +82,18 @@
   {
     "title": "OneDrive",
     "url": "https://onedrive.live.com/",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://onedrive.live.com/"
+    ]
   },
   {
     "title": "Grok",
     "url": "https://grok.com/",
-    "category": "AI"
+    "category": "AI",
+    "urls": [
+      "https://grok.com/"
+    ]
   },
   {
     "title": "ChatGPT",
@@ -88,32 +108,50 @@
   {
     "title": "Notion Mail",
     "url": "https://mail.notion.so/inbox",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://mail.notion.so/inbox"
+    ]
   },
   {
     "title": "Google Account Dashboard",
     "url": "https://myaccount.google.com/dashboard",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://myaccount.google.com/dashboard"
+    ]
   },
   {
     "title": "Google Account",
     "url": "https://myaccount.google.com/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://myaccount.google.com/"
+    ]
   },
   {
     "title": "Google Videos",
     "url": "https://docs.google.com/videos/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://docs.google.com/videos/"
+    ]
   },
   {
     "title": "Google One",
     "url": "https://one.google.com/",
-    "category": "Google"
+    "category": "Google",
+    "urls": [
+      "https://one.google.com/"
+    ]
   },
   {
     "title": "Google Photos",
     "url": "https://photos.google.com/",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://photos.google.com/"
+    ]
   },
   {
     "title": "YouTube",
@@ -128,22 +166,26 @@
   {
     "title": "Google Drive",
     "url": "https://drive.google.com/",
-    "category": "Storage"
-  },
-  {
-    "title": "Vert.sh",
-    "url": "https://vert.sh/",
-    "category": "Utilities"
+    "category": "Storage",
+    "urls": [
+      "https://drive.google.com/"
+    ]
   },
   {
     "title": "Yoink",
     "url": "https://yoink.tools/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://yoink.tools/"
+    ]
   },
   {
     "title": "Raindrop.io",
     "url": "https://app.raindrop.io/",
-    "category": "Utilities"
+    "category": "Utilities",
+    "urls": [
+      "https://app.raindrop.io/"
+    ]
   },
   {
     "title": "Perplexity AI",
@@ -158,22 +200,32 @@
   {
     "title": "Mega",
     "url": "https://mega.nz",
-    "category": "Storage"
+    "category": "Storage",
+    "urls": [
+      "https://mega.nz"
+    ]
   },
   {
-    "title": "Unlim Cloud Login",
-    "url": "https://unlim-cloud.web.app/login",
-    "category": "Storage"
+    "title": "Unlim Cloud",
+    "url": "https://unlim-cloud.web.app/",
+    "category": "Storage",
+    "urls": [
+      "https://unlim-cloud.web.app/"
+    ]
   },
   {
     "title": "SimpleLogin Dashboard",
     "url": "https://app.simplelogin.io/dashboard",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://app.simplelogin.io/dashboard"
+    ]
   },
   {
     "title": "Facebook",
     "url": "http://www.facebook.com",
     "urls": [
+      "http://www.facebook.com",
       "https://www.facebook.com",
       "https://m.facebook.com",
       "https://web.facebook.com"
@@ -203,22 +255,34 @@
   {
     "title": "Proton Mail",
     "url": "https://mail.proton.me/",
-    "category": "Email"
+    "category": "Email",
+    "urls": [
+      "https://mail.proton.me/"
+    ]
   },
   {
     "title": "Feedly",
     "url": "https://feedly.com/",
-    "category": "Social"
+    "category": "Social",
+    "urls": [
+      "https://feedly.com/"
+    ]
   },
   {
     "title": "AI Plot Generator - Perchance",
     "url": "https://perchance.org/ai-plot-generator",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-plot-generator"
+    ]
   },
   {
     "title": "Lunatic's Full Extras No Limit AI - Perchance",
     "url": "https://perchance.org/lunatics-full-extras-no-limit-ai-the-have-fun-gen-full-with-extras",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/lunatics-full-extras-no-limit-ai-the-have-fun-gen-full-with-extras"
+    ]
   },
   {
     "title": "X (Twitter)",
@@ -233,67 +297,106 @@
   {
     "title": "Perchance.org (Home)",
     "url": "https://perchance.org",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org"
+    ]
   },
   {
     "title": "NECS Image Generator",
     "url": "https://perchance.org/necs-img",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/necs-img"
+    ]
   },
   {
     "title": "NECS Story Generator",
     "url": "https://perchance.org/necs-story",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/necs-story"
+    ]
   },
   {
     "title": "NECS Text-to-Image",
     "url": "https://perchance.org/necs-t2i",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/necs-t2i"
+    ]
   },
   {
     "title": "AI Art Generator Advanced",
     "url": "https://perchance.org/ai-art-generator-advanced",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-art-generator-advanced"
+    ]
   },
   {
     "title": "AI Text Rewriter",
     "url": "https://perchance.org/ai-text-rewriter",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-text-rewriter"
+    ]
   },
   {
     "title": "NECS AI Story Generator",
     "url": "https://perchance.org/ai-story-generator",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-story-generator"
+    ]
   },
   {
     "title": "AI Text Generator",
     "url": "https://perchance.org/ai-text-generator",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-text-generator"
+    ]
   },
   {
     "title": "AI Character Chat",
     "url": "https://perchance.org/ai-chat",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/ai-chat"
+    ]
   },
   {
     "title": "Ultimate AI Image Generator",
     "url": "https://perchance.org/5yf90s8rdo",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/5yf90s8rdo"
+    ]
   },
   {
     "title": "Image Generator Professional",
     "url": "https://perchance.org/image-generator-professional",
-    "category": "Perchance"
+    "category": "Perchance",
+    "urls": [
+      "https://perchance.org/image-generator-professional"
+    ]
   },
   {
     "title": "Bitwarden",
     "url": "https://vault.bitwarden.com/",
-    "category": "Privacy & Security"
+    "category": "Privacy & Security",
+    "urls": [
+      "https://vault.bitwarden.com/"
+    ]
   },
   {
     "title": "Threads",
     "url": "https://www.threads.com/@necs258",
-    "category": "Social"
+    "category": "Social",
+    "urls": [
+      "https://www.threads.com/@necs258"
+    ]
   },
   {
     "title": "DesiFakes",
@@ -308,32 +411,50 @@
   {
     "title": "DesiFakes Watched Threads",
     "url": "https://desifakes.com/watched/threads",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/watched/threads"
+    ]
   },
   {
     "title": "DesiFakes Alerts",
     "url": "https://desifakes.com/account/alerts",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/account/alerts"
+    ]
   },
   {
     "title": "DesiFakes Thematic and Special Contests",
     "url": "https://desifakes.com/forums/thematic-and-special-contests.69/",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/forums/thematic-and-special-contests.69/"
+    ]
   },
   {
     "title": "DesiFakes Story Writing Contest",
     "url": "https://desifakes.com/forums/desifakes-story-writing-contest.79/",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/forums/desifakes-story-writing-contest.79/"
+    ]
   },
   {
     "title": "DesiFakes Social Media Celebs",
     "url": "https://desifakes.com/forums/reels-celebrity-fakes-instagram-youtube-locked.62/",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/forums/reels-celebrity-fakes-instagram-youtube-locked.62/"
+    ]
   },
   {
     "title": "DesiFakes Stories",
     "url": "https://desifakes.com/forums/actress-sex-stories-mems-roleplay.49/",
-    "category": "Desifakes"
+    "category": "Desifakes",
+    "urls": [
+      "https://desifakes.com/forums/actress-sex-stories-mems-roleplay.49/"
+    ]
   },
   {
     "title": "Xossipy",
@@ -348,27 +469,42 @@
   {
     "title": "Xossipy Subscriptions",
     "url": "https://xossipy.com/usercp.php?action=subscriptions",
-    "category": "Xossip"
+    "category": "Xossip",
+    "urls": [
+      "https://xossipy.com/usercp.php?action=subscriptions"
+    ]
   },
   {
     "title": "Xossipy Telugu Stories",
     "url": "https://xossipy.com/forum-15.html",
-    "category": "Xossip"
+    "category": "Xossip",
+    "urls": [
+      "https://xossipy.com/forum-15.html"
+    ]
   },
   {
     "title": "Xossipy Telugu Incest Stories",
     "url": "https://xossipy.com/forum-49.html",
-    "category": "Xossip"
+    "category": "Xossip",
+    "urls": [
+      "https://xossipy.com/forum-49.html"
+    ]
   },
   {
     "title": "Xossipy English Stories",
     "url": "https://xossipy.com/forum-17.html",
-    "category": "Xossip"
+    "category": "Xossip",
+    "urls": [
+      "https://xossipy.com/forum-17.html"
+    ]
   },
   {
     "title": "Xossipy English Incest Stories",
     "url": "https://xossipy.com/forum-69.html",
-    "category": "Xossip"
+    "category": "Xossip",
+    "urls": [
+      "https://xossipy.com/forum-69.html"
+    ]
   },
   {
     "title": "MoreDesi",
@@ -383,27 +519,42 @@
   {
     "title": "MoreDesi Actress Boothu Kathalu",
     "url": "https://moredesi.com/category/actress-boothu-kathalu/",
-    "category": "MoreDesi"
+    "category": "MoreDesi",
+    "urls": [
+      "https://moredesi.com/category/actress-boothu-kathalu/"
+    ]
   },
   {
     "title": "MoreDesi Actress Sex Stories English",
     "url": "https://moredesi.com/category/actress-sex-stories-english/",
-    "category": "MoreDesi"
+    "category": "MoreDesi",
+    "urls": [
+      "https://moredesi.com/category/actress-sex-stories-english/"
+    ]
   },
   {
     "title": "Kama Kadhaikal",
     "url": "https://kamakadhaikal.wordpress.com/",
-    "category": "Forums"
+    "category": "Forums",
+    "urls": [
+      "https://kamakadhaikal.wordpress.com/"
+    ]
   },
   {
     "title": "Literotica Celebrity Stories",
     "url": "https://www.literotica.com/c/celebrity-stories",
-    "category": "Literotica"
+    "category": "Literotica",
+    "urls": [
+      "https://www.literotica.com/c/celebrity-stories"
+    ]
   },
   {
     "title": "SexBaba",
     "url": "https://sexbaba.co/",
-    "category": "Forums"
+    "category": "Forums",
+    "urls": [
+      "https://sexbaba.co/"
+    ]
   },
   {
     "title": "Xossip1",
@@ -418,17 +569,26 @@
   {
     "title": "CelebritySex.co",
     "url": "https://celebritysex.co/",
-    "category": "Actress Media"
+    "category": "Actress Media",
+    "urls": [
+      "https://celebritysex.co/"
+    ]
   },
   {
     "title": "DeepHot.link",
     "url": "https://deephot.link/",
-    "category": "Actress Media"
+    "category": "Actress Media",
+    "urls": [
+      "https://deephot.link/"
+    ]
   },
   {
     "title": "Bolly Tube",
     "url": "https://www.bolly-tube.com/",
-    "category": "Actress Media"
+    "category": "Actress Media",
+    "urls": [
+      "https://www.bolly-tube.com/"
+    ]
   },
   {
     "title": "xHamster",
@@ -438,17 +598,23 @@
       "https://xhamster.desi/",
       "https://xhamster2.com/"
     ],
-    "category": "Media"
+    "category": "Porn"
   },
   {
     "title": "PornKeen",
     "url": "https://pornkeen.net/",
-    "category": "Actress Media"
+    "category": "Actress Media",
+    "urls": [
+      "https://pornkeen.net/"
+    ]
   },
   {
     "title": "Tamil Sex",
     "url": "https://tamil-sex.org/",
-    "category": "Actress Media"
+    "category": "Actress Media",
+    "urls": [
+      "https://tamil-sex.org/"
+    ]
   },
   {
     "title": "XNXX",
@@ -458,7 +624,7 @@
       "https://xnxx.com/",
       "https://www.xnxx.es/"
     ],
-    "category": "Media"
+    "category": "Porn"
   },
   {
     "title": "XVideos",
@@ -468,343 +634,542 @@
       "https://xvideos.com/",
       "https://www.xvideos.es/"
     ],
-    "category": "Media"
+    "category": "Porn"
   },
   {
     "title": "FreeXcafe",
     "url": "https://www.freexcafe.com/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://www.freexcafe.com/"
+    ]
   },
   {
     "title": "Pornhub",
     "url": "https://pornhub.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornhub.com"
+    ]
   },
   {
     "title": "TubeSafari",
     "url": "https://tubesafari.com/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://tubesafari.com/"
+    ]
   },
   {
     "title": "UncutClips",
     "url": "https://uncutvideos.org",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://uncutvideos.org"
+    ]
   },
   {
     "title": "RedTube",
     "url": "https://redtube.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://redtube.com"
+    ]
   },
   {
     "title": "YouPorn",
     "url": "https://youporn.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://youporn.com"
+    ]
   },
   {
     "title": "Eporner",
     "url": "https://eporner.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://eporner.com"
+    ]
   },
   {
     "title": "SpankBang",
     "url": "https://spankbang.com/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://spankbang.com/"
+    ]
   },
   {
     "title": "Tube8",
     "url": "https://tube8.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://tube8.com"
+    ]
   },
   {
     "title": "Porn.com",
     "url": "https://porn.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://porn.com"
+    ]
   },
   {
     "title": "Thumbzilla",
     "url": "https://thumbzilla.com/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://thumbzilla.com/"
+    ]
   },
   {
     "title": "Tnaflix",
     "url": "https://tnaflix.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://tnaflix.com"
+    ]
   },
   {
     "title": "SexTB",
     "url": "https://sextb.net/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://sextb.net/"
+    ]
   },
   {
     "title": "Beeg",
     "url": "https://beeg.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://beeg.com"
+    ]
   },
   {
     "title": "DrTuber",
     "url": "https://drtuber.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://drtuber.com"
+    ]
   },
   {
     "title": "SunPorno",
     "url": "https://sunporno.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://sunporno.com"
+    ]
   },
   {
     "title": "PornTreX",
     "url": "https://porntrex.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://porntrex.com"
+    ]
   },
   {
     "title": "XTube",
     "url": "https://xtube.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xtube.com"
+    ]
   },
   {
     "title": "Slutload",
     "url": "https://slutload.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://slutload.com"
+    ]
   },
   {
     "title": "PornHD",
     "url": "https://pornhd.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornhd.com"
+    ]
   },
   {
     "title": "BravoPorn",
     "url": "https://bravoporn.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://bravoporn.com"
+    ]
   },
   {
     "title": "Fantasti.cc",
     "url": "https://fantasti.cc",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fantasti.cc"
+    ]
   },
   {
     "title": "XTubePorn",
     "url": "https://xtubeporn.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xtubeporn.com"
+    ]
   },
   {
     "title": "HotMovies",
     "url": "https://hotmovies.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://hotmovies.com"
+    ]
   },
   {
     "title": "XMovie8",
     "url": "https://xmovie8.porn",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xmovie8.porn"
+    ]
   },
   {
     "title": "PornOne",
     "url": "https://pornone.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornone.com"
+    ]
   },
   {
     "title": "NuBay",
     "url": "https://nubay.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://nubay.com"
+    ]
   },
   {
     "title": "Motherless",
     "url": "https://motherless.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://motherless.com"
+    ]
   },
   {
     "title": "RedGifs",
     "url": "https://redgifs.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://redgifs.com"
+    ]
   },
   {
     "title": "CamSoda",
     "url": "https://camsoda.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://camsoda.com"
+    ]
   },
   {
     "title": "Chaturbate",
     "url": "https://chaturbate.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://chaturbate.com"
+    ]
   },
   {
     "title": "MyFreeCams",
     "url": "https://myfreecams.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://myfreecams.com"
+    ]
   },
   {
     "title": "LiveJasmin",
     "url": "https://livejasmin.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://livejasmin.com"
+    ]
   },
   {
     "title": "Stripchat",
     "url": "https://stripchat.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://stripchat.com"
+    ]
   },
   {
     "title": "BongaCams",
     "url": "https://bongacams.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://bongacams.com"
+    ]
   },
   {
     "title": "Cam4",
     "url": "https://cam4.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://cam4.com"
+    ]
   },
   {
     "title": "XConfessions",
     "url": "https://xconfessions.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xconfessions.com"
+    ]
   },
   {
     "title": "Sex.com",
     "url": "https://sex.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://sex.com"
+    ]
   },
   {
     "title": "HClips",
     "url": "https://hclips.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://hclips.com"
+    ]
   },
   {
     "title": "HQPorner",
     "url": "https://hqporner.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://hqporner.com"
+    ]
   },
   {
     "title": "XXNX",
     "url": "https://xxnx.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xxnx.com"
+    ]
   },
   {
     "title": "4Tube",
     "url": "https://4tube.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://4tube.com"
+    ]
   },
   {
     "title": "Fapster",
     "url": "https://fapster.xxx",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fapster.xxx"
+    ]
   },
   {
     "title": "FapVid",
     "url": "https://fapvid.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fapvid.com"
+    ]
   },
   {
     "title": "FapNation",
     "url": "https://fapnation.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fapnation.com"
+    ]
   },
   {
     "title": "YesPornPlease",
     "url": "https://yespornplease.to",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://yespornplease.to"
+    ]
   },
   {
     "title": "DaftSex",
     "url": "https://daftsex.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://daftsex.com"
+    ]
   },
   {
     "title": "Xozilla",
     "url": "https://xozilla.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xozilla.com"
+    ]
   },
   {
     "title": "xFreeHD",
     "url": "https://xfreehd.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xfreehd.com"
+    ]
   },
   {
     "title": "PornDig",
     "url": "https://porndig.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://porndig.com"
+    ]
   },
   {
     "title": "WatchGF",
     "url": "https://watchmygf.xxx",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://watchmygf.xxx"
+    ]
   },
   {
     "title": "PornMegaLoad",
     "url": "https://pornmegaload.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornmegaload.com"
+    ]
   },
   {
     "title": "Analdin",
     "url": "https://analdin.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://analdin.com"
+    ]
   },
   {
     "title": "Fux",
     "url": "https://fux.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fux.com"
+    ]
   },
   {
     "title": "XXXBunker",
     "url": "https://xxxbunker.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://xxxbunker.com"
+    ]
   },
   {
     "title": "BravoTube",
     "url": "https://bravotube.net",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://bravotube.net"
+    ]
   },
   {
     "title": "PornDoe",
     "url": "https://porndoe.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://porndoe.com"
+    ]
   },
   {
     "title": "PornHat",
     "url": "https://pornhat.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornhat.com"
+    ]
   },
   {
     "title": "JizzBunker",
     "url": "https://jizzbunker.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://jizzbunker.com"
+    ]
   },
   {
     "title": "ExtremeTube",
     "url": "https://extremetube.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://extremetube.com"
+    ]
   },
   {
     "title": "Spankwire",
     "url": "https://spankwire.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://spankwire.com"
+    ]
   },
   {
     "title": "YourPorn",
     "url": "https://yourporn.xxx",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://yourporn.xxx"
+    ]
   },
   {
     "title": "PornXO",
     "url": "https://pornxo.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://pornxo.com"
+    ]
   },
   {
     "title": "SexVid",
     "url": "https://sexvid.xxx",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://sexvid.xxx"
+    ]
   },
   {
     "title": "FapFlube",
     "url": "https://fapflube.com",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://fapflube.com"
+    ]
   },
   {
     "title": "HDHub4U",
     "url": "https://hdhub4u.day/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://hdhub4u.day/"
+    ]
   },
   {
     "title": "RdxHD",
     "url": "https://rdxhd.com/",
-    "category": "Media"
+    "category": "Porn",
+    "urls": [
+      "https://rdxhd.com/"
+    ]
   }
 ]
-
-
