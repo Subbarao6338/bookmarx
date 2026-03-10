@@ -14,8 +14,10 @@ const CAT_ICONS = {
   "AI": "🧠",
   "Productivity": "🚀",
   "Utilities": "⚙️",
+  "Actress Media": "🌟",
   "Media": "🎥",
   "Streaming": "📺",
+  "Porn": "🔞",
   "Perchance": "🎲",
   "Social": "💬",
   "Forums": "🧵",
@@ -739,4 +741,5 @@ const PageTools = {
 
 // Initial Start
 Core.init();
+
 
