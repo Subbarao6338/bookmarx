@@ -715,6 +715,24 @@
     "urls": [
       "https://4tube.com"
     ]
+  },
+  {
+    "title": "Defuddle",
+    "url": "https://defuddle.md/",
+    "urls": ["https://defuddle.md/"],
+    "category": "Utilities"
+  },
+  {
+    "title": "Arena AI",
+    "url": "https://arena.ai/",
+    "urls": ["https://arena.ai/"],
+    "category": "AI"
+  },
+  {
+    "title": "Yupp AI",
+    "url": "https://yupp.ai/",
+    "urls": ["https://yupp.ai/"],
+    "category": "AI"
   }
 ]
 
