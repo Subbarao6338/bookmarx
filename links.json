@@ -733,6 +733,18 @@
     "url": "https://yupp.ai/",
     "urls": ["https://yupp.ai/"],
     "category": "AI"
+  },
+  {
+    "title": "Uncensored AI",
+    "url": "https://uncensored.com/ai",
+    "urls": ["https://uncensored.com/ai"],
+    "category": "AI"
+  },
+  {
+    "title": "Folo",
+    "url": "https://folo.is",
+    "urls": ["https://folo.is"],
+    "category": "Social"
   }
 ]
 
