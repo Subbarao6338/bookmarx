@@ -41,14 +41,6 @@
     ]
   },
   {
-    "title": "Gemini",
-    "url": "https://gemini.google.com/",
-    "category": "AI",
-    "urls": [
-      "https://gemini.google.com/"
-    ]
-  },
-  {
     "title": "Telegram Web",
     "url": "https://web.telegram.org/k/",
     "urls": [
@@ -94,24 +86,6 @@
     "urls": [
       "https://onedrive.live.com/"
     ]
-  },
-  {
-    "title": "Grok",
-    "url": "https://grok.com/",
-    "category": "AI",
-    "urls": [
-      "https://grok.com/"
-    ]
-  },
-  {
-    "title": "ChatGPT",
-    "url": "https://chatgpt.com/",
-    "urls": [
-      "https://chatgpt.com/",
-      "https://chat.openai.com/",
-      "https://www.chatgpt.com/"
-    ],
-    "category": "AI"
   },
   {
     "title": "Notion Mail",
@@ -729,18 +703,6 @@
     "url": "https://defuddle.md/",
     "urls": ["https://defuddle.md/"],
     "category": "Utilities"
-  },
-  {
-    "title": "Arena AI",
-    "url": "https://arena.ai/",
-    "urls": ["https://arena.ai/"],
-    "category": "AI"
-  },
-  {
-    "title": "Yupp AI",
-    "url": "https://yupp.ai/",
-    "urls": ["https://yupp.ai/"],
-    "category": "AI"
   },
   {
     "title": "Uncensored AI",
