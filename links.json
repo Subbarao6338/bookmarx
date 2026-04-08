@@ -16,14 +16,6 @@
     "category": "Privacy & Security"
   },
   {
-    "title": "Hugging Face",
-    "url": "https://huggingface.co",
-    "category": "AI",
-    "urls": [
-      "https://huggingface.co"
-    ]
-  },
-  {
     "title": "Notion",
     "url": "https://www.notion.so",
     "category": "Productivity",
@@ -168,16 +160,6 @@
     "urls": [
       "https://app.raindrop.io/"
     ]
-  },
-  {
-    "title": "Perplexity AI",
-    "url": "https://www.perplexity.ai/",
-    "urls": [
-      "https://www.perplexity.ai/",
-      "https://perplexity.ai/",
-      "https://labs.perplexity.ai/"
-    ],
-    "category": "AI"
   },
   {
     "title": "Mega",
