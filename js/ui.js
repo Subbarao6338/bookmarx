@@ -27,6 +27,13 @@ export const UI = {
         this.renderBreadcrumb();
       }
     });
+
+    this.longPressTimer = null;
+  },
+
+  handleLongPress(e, link) {
+    e.preventDefault();
+    this.openToolActions(link);
   },
 
   getIconHtml(cat, size = '18px') {
@@ -162,10 +169,28 @@ export const UI = {
           const card = document.createElement('div');
           card.className = 'card';
           card.style.setProperty('--delay', index);
+
+          // Click handler
           card.onclick = (e) => {
             if (e.target.closest('.card-footer-new')) return;
             Utils.tryUrlWithFallback(link.urls || [link.url], link.title);
           };
+
+          // Long press handlers
+          const start = (e) => {
+            this.longPressTimer = setTimeout(() => this.handleLongPress(e, link), 600);
+          };
+          const cancel = () => clearTimeout(this.longPressTimer);
+
+          card.addEventListener('mousedown', start);
+          card.addEventListener('touchstart', start, { passive: false });
+          card.addEventListener('mouseup', cancel);
+          card.addEventListener('mouseleave', cancel);
+          card.addEventListener('touchend', cancel);
+          card.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            this.handleLongPress(e, link);
+          });
 
           const userIcon = link.icon || "";
           const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
@@ -180,10 +205,6 @@ export const UI = {
               <span class="url-count-badge">${urls.length} URL${urls.length > 1 ? 's' : ''}</span>
               <div class="card-footer-actions">
                 <button class="pin-btn ${link.pinned ? 'active' : ''}" onclick="event.stopPropagation(); Core.togglePin('${link.id}')" title="Pin"><span class="material-icons" style="font-size:18px;">push_pin</span></button>
-                <div class="card-actions-new">
-                  <button onclick="event.stopPropagation(); UI.openEdit('${link.id}')" title="Edit"><span class="material-icons" style="font-size:18px;">edit</span></button>
-                  <button class="btn-delete" onclick="event.stopPropagation(); Core.deleteLink('${link.id}')" title="Delete"><span class="material-icons" style="font-size:18px;">delete</span></button>
-                </div>
               </div>
             </div>`;
           grid.appendChild(card);
@@ -236,6 +257,59 @@ export const UI = {
     wrapper.style.marginBottom = '8px';
     wrapper.innerHTML = `<input type="url" class="alt-url-input" value="${value}" style="flex:1;"><button type="button" class="btn-remove" onclick="this.parentElement.remove()" style="padding:4px 8px;">✕</button>`;
     container.appendChild(wrapper);
+  },
+
+  openToolActions(link) {
+    document.getElementById('tool-actions-title').textContent = link.title;
+    const urlContainer = document.getElementById('tool-actions-urls');
+    urlContainer.innerHTML = '';
+
+    const urls = link.urls || [link.url];
+    urls.forEach(url => {
+      const item = document.createElement('div');
+      item.className = 'url-action-item';
+      item.innerHTML = `
+        <span class="url-text" title="${url}">${url}</span>
+        <div class="url-btns">
+          <button onclick="window.open('${url}', '_blank')" title="Open"><span class="material-icons" style="font-size:18px;">open_in_new</span></button>
+          <button onclick="UI.copyToClipboard('${url}')" title="Copy"><span class="material-icons" style="font-size:18px;">content_copy</span></button>
+        </div>
+      `;
+      urlContainer.appendChild(item);
+    });
+
+    document.getElementById('btn-copy-all').onclick = () => {
+      this.copyToClipboard(urls.join('\n'));
+      this.showToast('All URLs copied to clipboard');
+    };
+
+    document.getElementById('btn-edit-tool').onclick = () => {
+      this.closeModal();
+      this.openEdit(link.id);
+    };
+
+    document.getElementById('btn-delete-tool').onclick = () => {
+      this.closeModal();
+      Core.deleteLink(link.id);
+    };
+
+    this.openModal('modal-tool-actions');
+  },
+
+  copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      this.showToast('Copied to clipboard');
+    });
+  },
+
+  showToast(message) {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    toast.textContent = message;
+    toast.classList.add('active');
+    setTimeout(() => {
+      toast.classList.remove('active');
+    }, 2000);
   },
 
   handleFormSubmit(e) {
