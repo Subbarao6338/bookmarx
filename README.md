@@ -17,8 +17,8 @@ A personal dashboard to organize and access your favorite websites.
 ## Getting Started
 
 1. **Open the Dashboard**: Simply open `index.html` in your web browser.
-2. **Initial Data**: The app loads initial data from `links.json`.
-3. **Customize**: 
+2. **Initial Data**: The app loads initial data from `necs_links.json`.
+3. **Customize**:
    - Click the **+** button to add new tools.
    - Use the edit/delete buttons on cards to manage your tools.
    - Toggle the theme using the moon/sun icon in the top bar.
@@ -28,13 +28,13 @@ A personal dashboard to organize and access your favorite websites.
 - `index.html`: The main entry point for the application.
 - `hub.js`: Contains all the logic for the dashboard, including state management and UI rendering.
 - `style.css`: Styles for the application.
-- `links.json`: The default list of links used to populate the dashboard if no local data is found.
+- `necs_links.json`: The default list of links used to populate the dashboard if no local data is found.
 
 ## Customization
 
-You can manually edit `links.json` to change the default set of links that load for a new user (or if you clear your local storage).
+You can manually edit `necs_links.json` to change the default set of links that load for a new user (or if you clear your local storage).
 
-Modify the `links.json` file with the following structure:
+Modify the `necs_links.json` file with the following structure:
 
 ```json
 [
@@ -47,7 +47,3 @@ Modify the `links.json` file with the following structure:
   }
 ]
 ```
-
-
-
-
