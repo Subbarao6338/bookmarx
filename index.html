@@ -15,7 +15,6 @@
         <div class="logo-container">
           <img src="perchance.png" alt="Necs Hub Logo" class="app-logo">
           <h1 class="page-title">NECS Hub</h1>
-          <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
         </div>
         <div class="top-actions">
           <div class="search-container" id="search-container">
@@ -25,19 +24,11 @@
           <button id="settings-toggle" class="icon-btn" onclick="UI.openModal('modal-settings')" title="Settings">
             <span class="material-icons">settings</span>
           </button>
-          <div class="fab-container" id="fab-container">
-            <div class="fab-menu">
-              <button class="fab-item" data-label="Add Tool" onclick="UI.openModal('modal-add')">
-                <span class="material-icons">add</span>
-              </button>
-              <button id="about-toggle" class="fab-item" onclick="UI.openAboutModal()" title="About" data-label="About">
-                <span class="material-icons">info</span>
-              </button>
-            </div>
-            <button class="fab" onclick="UI.toggleFab()" title="Menu"><span class="material-icons">menu</span></button>
-          </div>
         </div>
       </header>
+
+      <nav id="breadcrumb-nav" class="breadcrumb-nav"></nav>
+
       <div id="content" class="tools-container"></div>
     </main>
   </div>
@@ -73,6 +64,13 @@
             <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;" />
           </label>
           <button class="btn-data danger" onclick="Tools.resetData()">Reset Dashboard</button>
+        </div>
+      </div>
+      <div class="setting-group">
+        <label>Actions</label>
+        <div class="data-actions">
+          <button class="btn-data" onclick="UI.openModal('modal-add')">Add Tool</button>
+          <button class="btn-data" onclick="UI.openAboutModal()">About</button>
         </div>
       </div>
     </div>
@@ -134,6 +132,6 @@
     </div>
   </div>
 
-  <script src="hub.js"></script>
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>

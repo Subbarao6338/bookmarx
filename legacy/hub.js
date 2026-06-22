@@ -1,11 +1,14 @@
 // ============= CONFIG & STATE =============
 const STORAGE_KEY = "necs_hub_links_v1";
+const COLLAPSE_KEY = "necs_hub_collapsed_v1";
+
 const STATE = {
   links: [],
   activeCategory: 'All',
   searchQuery: '',
   isDarkMode: localStorage.getItem('hub_theme') === 'dark',
-  accentColor: localStorage.getItem('hub_accent') || 'indigo'
+  accentColor: localStorage.getItem('hub_accent') || 'indigo',
+  collapsedCategories: new Set(JSON.parse(localStorage.getItem(COLLAPSE_KEY) || '[]'))
 };
 
 let CAT_ICONS = {
@@ -170,9 +173,6 @@ const UI = {
         STATE.isDropdownOpen = false;
         this.renderBreadcrumb();
       }
-      if (!e.target.closest('#fab-container')) {
-        this.closeFab();
-      }
     });
   },
 
@@ -194,21 +194,27 @@ const UI = {
     const allCats = [...new Set([...definedCats, ...existingCats])].sort();
 
     nav.innerHTML = `
-      <div style="position:relative">
-         <span class="breadcrumb-item" onclick="UI.toggleDropdown(event)">
-            ${this.getIconHtml(STATE.activeCategory)} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
-         </span>
-         <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
-             <div class="dropdown-item" onclick="UI.setCategory('All')">
-                <span>${this.getIconHtml('All')} All Tools</span>
-                <span class="count">${STATE.links.length}</span>
-             </div>
-             ${allCats.map(cat => `
-                 <div class="dropdown-item" onclick="UI.setCategory('${cat}')">
-                    <span>${this.getIconHtml(cat)} ${cat}</span>
-                    <span class="count">${stats[cat] || 0}</span>
-                 </div>`).join('')}
-         </div>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <div style="position:relative">
+           <span class="breadcrumb-item" onclick="UI.toggleDropdown(event)">
+              ${this.getIconHtml(STATE.activeCategory)} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
+           </span>
+           <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
+               <div class="dropdown-item" onclick="UI.setCategory('All')">
+                  <span>${this.getIconHtml('All')} All Tools</span>
+                  <span class="count">${STATE.links.length}</span>
+               </div>
+               ${allCats.map(cat => `
+                   <div class="dropdown-item" onclick="UI.setCategory('${cat}')">
+                      <span>${this.getIconHtml(cat)} ${cat}</span>
+                      <span class="count">${stats[cat] || 0}</span>
+                   </div>`).join('')}
+           </div>
+        </div>
+        <div class="global-actions">
+           <button class="btn-small-theme" onclick="UI.collapseAll()" title="Collapse All"><span class="material-icons" style="font-size:18px;">unfold_less</span></button>
+           <button class="btn-small-theme" onclick="UI.expandAll()" title="Expand All"><span class="material-icons" style="font-size:18px;">unfold_more</span></button>
+        </div>
       </div>
     `;
   },
@@ -224,6 +230,33 @@ const UI = {
     STATE.isDropdownOpen = false;
     this.renderBreadcrumb();
     this.render();
+  },
+
+  toggleCategory(cat) {
+    if (STATE.collapsedCategories.has(cat)) {
+      STATE.collapsedCategories.delete(cat);
+    } else {
+      STATE.collapsedCategories.add(cat);
+    }
+    this.saveCollapsed();
+    this.render();
+  },
+
+  expandAll() {
+    STATE.collapsedCategories.clear();
+    this.saveCollapsed();
+    this.render();
+  },
+
+  collapseAll() {
+    const stats = Core.getStats();
+    Object.keys(stats).forEach(cat => STATE.collapsedCategories.add(cat));
+    this.saveCollapsed();
+    this.render();
+  },
+
+  saveCollapsed() {
+    localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...STATE.collapsedCategories]));
   },
 
   render() {
@@ -253,50 +286,61 @@ const UI = {
     }
 
     cats.forEach(cat => {
+      const isCollapsed = STATE.collapsedCategories.has(cat);
       const section = document.createElement('div');
-      section.className = 'category-section';
-      section.innerHTML = `<div class="category-header"><div class="category-title">${this.getIconHtml(cat, '24px')} ${cat} <span style="font-size:0.8em;opacity:0.5;margin-left:8px">${grouped[cat].length}</span></div></div>`;
+      section.className = `category-section ${isCollapsed ? 'collapsed' : ''}`;
+
+      section.innerHTML = `
+        <div class="category-header" onclick="UI.toggleCategory('${cat}')" style="cursor:pointer;">
+          <div class="category-title">
+            ${this.getIconHtml(cat, '24px')} ${cat}
+            <span style="font-size:0.8em;opacity:0.5;margin-left:8px">${grouped[cat].length}</span>
+          </div>
+          <span class="material-icons chevron">${isCollapsed ? 'expand_more' : 'expand_less'}</span>
+        </div>`;
 
       const grid = document.createElement('div');
       grid.className = 'category-grid';
 
-      grouped[cat].forEach((link, index) => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.style.setProperty('--delay', index);
-        card.onclick = (e) => {
-          if (e.target.closest('.card-footer-new')) return;
-          Utils.tryUrlWithFallback(link.urls || [link.url], link.title);
-        };
+      if (!isCollapsed) {
+        grouped[cat].forEach((link, index) => {
+          const card = document.createElement('div');
+          card.className = 'card';
+          card.style.setProperty('--delay', index);
+          card.onclick = (e) => {
+            if (e.target.closest('.card-footer-new')) return;
+            Utils.tryUrlWithFallback(link.urls || [link.url], link.title);
+          };
 
-        const userIcon = link.icon || "";
-        const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
-        let imgHtml = isEmoji ? `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;">${userIcon}</div>` :
-          `<img src="${userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`}" class="card-icon" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🔗</text></svg>'">`;
+          const userIcon = link.icon || "";
+          const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
+          let imgHtml = isEmoji ? `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;">${userIcon}</div>` :
+            `<img src="${userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`}" class="card-icon" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🔗</text></svg>'">`;
 
-        const urls = link.urls || [link.url];
-        card.innerHTML = `
-          <div class="card-header-new"><div class="card-url-full">${link.url}</div></div>
-          <div class="card-content-new"><div class="card-icon-container">${imgHtml}</div><div class="card-title-new">${link.title}</div></div>
-          <div class="card-footer-new">
-            <span class="url-count-badge">${urls.length} URL${urls.length > 1 ? 's' : ''}</span>
-            <div class="card-footer-actions">
-              <button class="pin-btn ${link.pinned ? 'active' : ''}" onclick="event.stopPropagation(); Core.togglePin('${link.id}')" title="Pin"><span class="material-icons" style="font-size:18px;">push_pin</span></button>
-              <div class="card-actions-new">
-                <button onclick="event.stopPropagation(); UI.openEdit('${link.id}')" title="Edit"><span class="material-icons" style="font-size:18px;">edit</span></button>
-                <button class="btn-delete" onclick="event.stopPropagation(); Core.deleteLink('${link.id}')" title="Delete"><span class="material-icons" style="font-size:18px;">delete</span></button>
+          const urls = link.urls || [link.url];
+          card.innerHTML = `
+            <div class="card-header-new"><div class="card-url-full">${link.url}</div></div>
+            <div class="card-content-new"><div class="card-icon-container">${imgHtml}</div><div class="card-title-new">${link.title}</div></div>
+            <div class="card-footer-new">
+              <span class="url-count-badge">${urls.length} URL${urls.length > 1 ? 's' : ''}</span>
+              <div class="card-footer-actions">
+                <button class="pin-btn ${link.pinned ? 'active' : ''}" onclick="event.stopPropagation(); Core.togglePin('${link.id}')" title="Pin"><span class="material-icons" style="font-size:18px;">push_pin</span></button>
+                <div class="card-actions-new">
+                  <button onclick="event.stopPropagation(); UI.openEdit('${link.id}')" title="Edit"><span class="material-icons" style="font-size:18px;">edit</span></button>
+                  <button class="btn-delete" onclick="event.stopPropagation(); Core.deleteLink('${link.id}')" title="Delete"><span class="material-icons" style="font-size:18px;">delete</span></button>
+                </div>
               </div>
-            </div>
-          </div>`;
-        grid.appendChild(card);
-      });
+            </div>`;
+          grid.appendChild(card);
+        });
+      }
+
       section.appendChild(grid);
       container.appendChild(section);
     });
   },
 
   openModal(id) {
-    this.closeFab();
     document.getElementById(id).style.display = 'block';
     document.getElementById('modal-overlay').style.display = 'block';
     if (id === 'modal-add') {
@@ -347,14 +391,6 @@ const UI = {
     const data = { title: document.getElementById('tool-title').value.trim(), url: primaryUrl, urls, icon: document.getElementById('tool-icon').value.trim(), category: document.getElementById('tool-category').value.trim() || 'Others' };
     id ? Core.updateLink(id, data) : Core.addLink(data);
     this.closeModal();
-  },
-
-  toggleFab() {
-    document.getElementById('fab-container').classList.toggle('active');
-  },
-
-  closeFab() {
-    document.getElementById('fab-container').classList.remove('active');
   },
 
   async openAboutModal() {
