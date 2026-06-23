@@ -132,7 +132,6 @@ export const UI = {
 
     const urls = link.urls || [link.url];
     card.innerHTML = `
-      <div class="card-url-top">${link.url}</div>
       <div class="card-main">
         <div class="card-icon-container">${imgHtml}</div>
         <div class="card-title-new">${link.title}</div>
