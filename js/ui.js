@@ -21,7 +21,7 @@ export const UI = {
     if (tab === 'bookmarks') {
       hero.style.display = 'block';
       chips.style.display = 'flex';
-      document.getElementById('hero-title').textContent = 'Bookmarks';
+      document.getElementById('hero-title').textContent = 'Nex Bookmarks';
       document.getElementById('hero-subtitle').textContent = 'Access your favorite links and resources.';
     } else {
       hero.style.display = 'none';
@@ -433,6 +433,7 @@ export const UI = {
   markdownToHTML(markdown) {
     let html = markdown;
     html = html.replace(/!\[(.*?)\]\((.*?)\)/gim, '<img src="$2" alt="$1" style="max-width:100%;border-radius:12px;">');
+    html = html.replace(/\[(.*?)\]\((.*?)\)/gim, '<a href="$2" target="_blank">$1</a>');
     html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
     html = html.replace(/^## (.*$)/gim, '<h2>$1</h2>');
     html = html.replace(/^# (.*$)/gim, '<h1>$1</h1>');

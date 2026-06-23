@@ -6,7 +6,7 @@ export const Tools = {
     const blob = new Blob([JSON.stringify(STATE.links, null, 2)], { type: "application/json" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `hub_backup.json`;
+    a.download = `nex_bookmarks_backup.json`;
     a.click();
   },
   importData(input) {
@@ -36,7 +36,7 @@ export const PageTools = {
   },
   setTheme(theme) {
     STATE.isDarkMode = theme === 'dark';
-    localStorage.setItem('hub_theme', theme);
+    localStorage.setItem('nex_bookmarks_theme', theme);
     this.applyTheme();
   },
   applyTheme() {
@@ -44,7 +44,7 @@ export const PageTools = {
   },
   setAccent(accent) {
     STATE.accentColor = accent;
-    localStorage.setItem('hub_accent', accent);
+    localStorage.setItem('nex_bookmarks_accent', accent);
     this.applyAccent();
   },
   applyAccent() {
