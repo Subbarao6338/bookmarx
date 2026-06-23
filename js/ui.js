@@ -4,31 +4,31 @@ import { Core } from './core.js';
 
 export const UI = {
   init() {
-    this.renderBreadcrumb();
+    this.renderCategoryChips();
     this.render();
 
-    document.getElementById('search-toggle').addEventListener('click', (e) => {
-      e.stopPropagation();
-      document.getElementById('search-container').classList.toggle('active');
-      const input = document.getElementById('search');
-      if (document.getElementById('search-container').classList.contains('active')) {
-        input.focus();
-      }
-    });
-
-    document.getElementById('search').addEventListener('input', (e) => {
-      STATE.searchQuery = e.target.value.toLowerCase();
-      this.render();
-    });
-
-    document.addEventListener('click', (e) => {
-      if (!e.target.closest('.breadcrumb-nav')) {
-        STATE.isDropdownOpen = false;
-        this.renderBreadcrumb();
-      }
-    });
-
     this.longPressTimer = null;
+  },
+
+  switchTab(tab) {
+    STATE.activeTab = tab;
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.getElementById(`nav-${tab}`).classList.add('active');
+
+    const hero = document.getElementById('hero-section');
+    const chips = document.getElementById('category-chips');
+
+    if (tab === 'bookmarks') {
+      hero.style.display = 'block';
+      chips.style.display = 'flex';
+      document.getElementById('hero-title').textContent = 'Bookmarks';
+      document.getElementById('hero-subtitle').textContent = 'Access your favorite links and resources.';
+    } else {
+      hero.style.display = 'none';
+      chips.style.display = 'none';
+    }
+
+    this.render();
   },
 
   handleLongPress(e, link) {
@@ -46,8 +46,8 @@ export const UI = {
     return `<span class="material-icons" style="font-size:${size};vertical-align:middle;margin-right:8px;">${icon}</span>`;
   },
 
-  renderBreadcrumb() {
-    const nav = document.getElementById('breadcrumb-nav');
+  renderCategoryChips() {
+    const nav = document.getElementById('category-chips');
     if (!nav) return;
     const stats = Core.getStats();
     const definedCats = Object.keys(CAT_ICONS).filter(c => c !== 'All');
@@ -55,41 +55,22 @@ export const UI = {
     const allCats = [...new Set([...definedCats, ...existingCats])].sort();
 
     nav.innerHTML = `
-      <div style="display:flex; align-items:center; gap:12px;">
-        <div style="position:relative">
-           <span class="breadcrumb-item" onclick="UI.toggleDropdown(event)">
-              ${this.getIconHtml(STATE.activeCategory)} ${STATE.activeCategory} <span style="font-size:0.8em;opacity:0.6">▼</span>
-           </span>
-           <div class="category-dropdown ${STATE.isDropdownOpen ? 'active' : ''}">
-               <div class="dropdown-item" onclick="UI.setCategory('All')">
-                  <span>${this.getIconHtml('All')} All Tools</span>
-                  <span class="count">${STATE.links.length}</span>
-               </div>
-               ${allCats.map(cat => `
-                   <div class="dropdown-item" onclick="UI.setCategory('${cat}')">
-                      <span>${this.getIconHtml(cat)} ${cat}</span>
-                      <span class="count">${stats[cat] || 0}</span>
-                   </div>`).join('')}
-           </div>
-        </div>
-        <div class="global-actions">
-           <button class="btn-small-theme" onclick="UI.collapseAll()" title="Collapse All"><span class="material-icons" style="font-size:18px;">unfold_less</span></button>
-           <button class="btn-small-theme" onclick="UI.expandAll()" title="Expand All"><span class="material-icons" style="font-size:18px;">unfold_more</span></button>
-        </div>
+      <div class="chip ${STATE.activeCategory === 'All' ? 'active' : ''}" onclick="UI.setCategory('All')">
+        ${this.getIconHtml('All')} <span>All</span> <span class="count">${STATE.links.length}</span>
       </div>
+      <div class="chip ${STATE.activeCategory === 'Pinned' ? 'active' : ''}" onclick="UI.setCategory('Pinned')">
+        <span class="material-icons" style="font-size:18px;margin-right:8px;">push_pin</span> <span>Pinned</span> <span class="count">${STATE.links.filter(l => l.pinned).length}</span>
+      </div>
+      ${allCats.map(cat => `
+        <div class="chip ${STATE.activeCategory === cat ? 'active' : ''}" onclick="UI.setCategory('${cat}')">
+          ${this.getIconHtml(cat)} <span>${cat}</span> <span class="count">${stats[cat] || 0}</span>
+        </div>`).join('')}
     `;
-  },
-
-  toggleDropdown(e) {
-    e.stopPropagation();
-    STATE.isDropdownOpen = !STATE.isDropdownOpen;
-    this.renderBreadcrumb();
   },
 
   setCategory(cat) {
     STATE.activeCategory = cat;
-    STATE.isDropdownOpen = false;
-    this.renderBreadcrumb();
+    this.renderCategoryChips();
     this.render();
   },
 
@@ -120,14 +101,76 @@ export const UI = {
     localStorage.setItem(COLLAPSE_KEY, JSON.stringify([...STATE.collapsedCategories]));
   },
 
+  renderToolCard(link) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    card.onclick = (e) => {
+      if (e.target.closest('.card-footer-new')) return;
+      Utils.tryUrlWithFallback(link.urls || [link.url], link.title);
+    };
+
+    const start = (e) => {
+      this.longPressTimer = setTimeout(() => this.handleLongPress(e, link), 600);
+    };
+    const cancel = () => clearTimeout(this.longPressTimer);
+
+    card.addEventListener('mousedown', start);
+    card.addEventListener('touchstart', start, { passive: false });
+    card.addEventListener('mouseup', cancel);
+    card.addEventListener('mouseleave', cancel);
+    card.addEventListener('touchend', cancel);
+    card.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      this.handleLongPress(e, link);
+    });
+
+    const userIcon = link.icon || "";
+    const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
+    const imgHtml = isEmoji ? `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;">${userIcon}</div>` :
+      `<img src="${userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`}" class="card-icon" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🔗</text></svg>'">`;
+
+    const urls = link.urls || [link.url];
+    card.innerHTML = `
+      <div class="card-url-top">${link.url}</div>
+      <div class="card-main">
+        <div class="card-icon-container">${imgHtml}</div>
+        <div class="card-title-new">${link.title}</div>
+      </div>
+      <div class="card-footer-new">
+        <span class="url-badge"><span class="material-icons" style="font-size:14px;">expand_more</span> ${urls.length}</span>
+        <button class="pin-icon ${link.pinned ? 'active' : ''}" onclick="event.stopPropagation(); Core.togglePin('${link.id}')"><span class="material-icons" style="font-size:18px;">push_pin</span></button>
+      </div>`;
+    return card;
+  },
+
   render() {
     const container = document.getElementById('content');
     if (!container) return;
+
+    if (STATE.activeTab === 'search') {
+      if (!container.querySelector('.search-view')) {
+        container.innerHTML = '';
+        this.renderSearchView(container);
+      } else {
+        this.renderSearchContent();
+      }
+      return;
+    }
+
+    if (STATE.activeTab === 'settings') {
+      if (!container.querySelector('.settings-view')) {
+        container.innerHTML = '';
+        this.renderSettingsView(container);
+      }
+      return;
+    }
+
     container.innerHTML = '';
 
     let filtered = STATE.links.filter(l => {
       const matchesSearch = !STATE.searchQuery || l.title.toLowerCase().includes(STATE.searchQuery) || l.url.toLowerCase().includes(STATE.searchQuery);
-      const matchesCat = STATE.activeCategory === 'All' || l.category === STATE.activeCategory;
+      const matchesCat = STATE.activeCategory === 'All' || (STATE.activeCategory === 'Pinned' ? l.pinned : l.category === STATE.activeCategory);
       return matchesSearch && matchesCat;
     });
 
@@ -155,8 +198,8 @@ export const UI = {
       section.innerHTML = `
         <div class="category-header" onclick="UI.toggleCategory('${cat}')" style="cursor:pointer;">
           <div class="category-title">
-            ${this.getIconHtml(cat, '24px')} ${cat}
-            <span style="font-size:0.8em;opacity:0.5;margin-left:8px">${grouped[cat].length}</span>
+            ${this.getIconHtml(cat, '20px')} <span>${cat}</span>
+            <span class="count-pill">${grouped[cat].length}</span>
           </div>
           <span class="material-icons chevron">${isCollapsed ? 'expand_more' : 'expand_less'}</span>
         </div>`;
@@ -165,55 +208,104 @@ export const UI = {
       grid.className = 'category-grid';
 
       if (!isCollapsed) {
-        grouped[cat].forEach((link, index) => {
-          const card = document.createElement('div');
-          card.className = 'card';
-          card.style.setProperty('--delay', index);
-
-          // Click handler
-          card.onclick = (e) => {
-            if (e.target.closest('.card-footer-new')) return;
-            Utils.tryUrlWithFallback(link.urls || [link.url], link.title);
-          };
-
-          // Long press handlers
-          const start = (e) => {
-            this.longPressTimer = setTimeout(() => this.handleLongPress(e, link), 600);
-          };
-          const cancel = () => clearTimeout(this.longPressTimer);
-
-          card.addEventListener('mousedown', start);
-          card.addEventListener('touchstart', start, { passive: false });
-          card.addEventListener('mouseup', cancel);
-          card.addEventListener('mouseleave', cancel);
-          card.addEventListener('touchend', cancel);
-          card.addEventListener('contextmenu', (e) => {
-            e.preventDefault();
-            this.handleLongPress(e, link);
-          });
-
-          const userIcon = link.icon || "";
-          const isEmoji = userIcon && !userIcon.includes('/') && userIcon.length < 5;
-          let imgHtml = isEmoji ? `<div class="card-icon" style="display:grid;place-items:center;font-size:24px;">${userIcon}</div>` :
-            `<img src="${userIcon || `https://www.google.com/s2/favicons?domain=${Utils.getHostname(link.url)}&sz=64`}" class="card-icon" loading="lazy" onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2280%22>🔗</text></svg>'">`;
-
-          const urls = link.urls || [link.url];
-          card.innerHTML = `
-            <div class="card-header-new"><div class="card-url-full">${link.url}</div></div>
-            <div class="card-content-new"><div class="card-icon-container">${imgHtml}</div><div class="card-title-new">${link.title}</div></div>
-            <div class="card-footer-new">
-              <span class="url-count-badge">${urls.length} URL${urls.length > 1 ? 's' : ''}</span>
-              <div class="card-footer-actions">
-                <button class="pin-btn ${link.pinned ? 'active' : ''}" onclick="event.stopPropagation(); Core.togglePin('${link.id}')" title="Pin"><span class="material-icons" style="font-size:18px;">push_pin</span></button>
-              </div>
-            </div>`;
-          grid.appendChild(card);
+        grouped[cat].forEach(link => {
+          grid.appendChild(this.renderToolCard(link));
         });
       }
 
       section.appendChild(grid);
       container.appendChild(section);
     });
+  },
+
+  renderSearchView(container) {
+    container.innerHTML = `
+      <div class="search-view">
+        <div class="search-input-wrapper">
+          <span class="material-icons">search</span>
+          <input type="text" id="global-search" placeholder="Search tools..." value="${STATE.searchQuery}">
+        </div>
+        <div id="search-results" class="category-grid"></div>
+      </div>
+    `;
+
+    const input = document.getElementById('global-search');
+    input.focus();
+    input.addEventListener('input', (e) => {
+      STATE.searchQuery = e.target.value.toLowerCase();
+      this.renderSearchContent();
+    });
+
+    this.renderSearchContent();
+  },
+
+  renderSearchContent() {
+    const resultsContainer = document.getElementById('search-results');
+    if (!resultsContainer) return;
+
+    let filtered = STATE.links.filter(l => {
+      return !STATE.searchQuery || l.title.toLowerCase().includes(STATE.searchQuery) || l.url.toLowerCase().includes(STATE.searchQuery);
+    });
+
+    resultsContainer.innerHTML = '';
+    if (filtered.length === 0) {
+      resultsContainer.innerHTML = `<div style="text-align:center; color:#888; width:100%; margin-top:2rem;">No results found</div>`;
+      return;
+    }
+
+    filtered.forEach(link => {
+       resultsContainer.appendChild(this.renderToolCard(link));
+    });
+  },
+
+  renderSettingsView(container) {
+    const settingsView = document.createElement('div');
+    settingsView.className = 'settings-view';
+
+    const stats = Core.getStats();
+    const categories = Object.keys(stats);
+
+    settingsView.innerHTML = `
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">palette</span> Appearance</h3>
+        <div class="setting-group">
+          <label>Theme</label>
+          <div class="theme-options">
+            <button class="btn-theme" onclick="PageTools.setTheme('light')">Light</button>
+            <button class="btn-theme" onclick="PageTools.setTheme('dark')">Dark</button>
+          </div>
+        </div>
+        <div class="setting-group">
+          <label>Accent Color</label>
+          <div class="accent-options">
+            ${['indigo', 'green', 'red', 'purple', 'orange', 'teal', 'pink', 'amber', 'cyan', 'forest', 'earth', 'sky', 'leaf'].map(color => `
+              <div class="accent-pill ${color}" onclick="PageTools.setAccent('${color}')" title="${color.charAt(0).toUpperCase() + color.slice(1)}"></div>
+            `).join('')}
+          </div>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">storage</span> Data Management</h3>
+        <div class="data-actions">
+          <button class="btn-data" onclick="Tools.exportData()"><span class="material-icons">download</span> Export Data</button>
+          <label class="btn-data">
+            <span class="material-icons">upload</span> Import Data
+            <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;" />
+          </label>
+          <button class="btn-data danger" onclick="Tools.resetData()"><span class="material-icons">restart_alt</span> Reset Dashboard</button>
+        </div>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">bolt</span> Quick Actions</h3>
+        <div class="data-actions">
+          <button class="btn-data" onclick="UI.openModal('modal-add')"><span class="material-icons">add_box</span> Add Tool</button>
+          <button class="btn-data" onclick="UI.openAboutModal()"><span class="material-icons">info</span> About</button>
+        </div>
+      </section>
+    `;
+    container.appendChild(settingsView);
   },
 
   openModal(id) {
