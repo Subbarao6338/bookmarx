@@ -4,6 +4,7 @@ export const COLLAPSE_KEY = "necs_hub_collapsed_v1";
 export const STATE = {
   links: [],
   activeCategory: 'All',
+  activeTab: 'bookmarks',
   searchQuery: '',
   isDarkMode: localStorage.getItem('hub_theme') === 'dark',
   accentColor: localStorage.getItem('hub_accent') || 'indigo',
