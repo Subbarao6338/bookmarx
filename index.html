@@ -39,38 +39,70 @@
   <div id="modal-settings" class="modal">
     <h2>Settings</h2>
     <div class="settings-content">
-      <div class="setting-group">
-        <label>Theme</label>
-        <div class="theme-options">
-          <button class="btn-theme" onclick="PageTools.setTheme('light')">Light</button>
-          <button class="btn-theme" onclick="PageTools.setTheme('dark')">Dark</button>
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">palette</span> Appearance</h3>
+        <div class="setting-group">
+          <label>Theme</label>
+          <div class="theme-options">
+            <button class="btn-theme" onclick="PageTools.setTheme('light')">Light</button>
+            <button class="btn-theme" onclick="PageTools.setTheme('dark')">Dark</button>
+          </div>
         </div>
-      </div>
-      <div class="setting-group">
-        <label>Accent Color</label>
-        <div class="accent-options">
-          <div class="accent-pill indigo" onclick="PageTools.setAccent('indigo')"></div>
-          <div class="accent-pill green" onclick="PageTools.setAccent('green')"></div>
-          <div class="accent-pill red" onclick="PageTools.setAccent('red')"></div>
-          <div class="accent-pill purple" onclick="PageTools.setAccent('purple')"></div>
+        <div class="setting-group">
+          <label>Accent Color</label>
+          <div class="accent-options">
+            <div class="accent-pill indigo" onclick="PageTools.setAccent('indigo')" title="Indigo"></div>
+            <div class="accent-pill green" onclick="PageTools.setAccent('green')" title="Green"></div>
+            <div class="accent-pill red" onclick="PageTools.setAccent('red')" title="Red"></div>
+            <div class="accent-pill purple" onclick="PageTools.setAccent('purple')" title="Purple"></div>
+            <div class="accent-pill orange" onclick="PageTools.setAccent('orange')" title="Orange"></div>
+            <div class="accent-pill teal" onclick="PageTools.setAccent('teal')" title="Teal"></div>
+            <div class="accent-pill pink" onclick="PageTools.setAccent('pink')" title="Pink"></div>
+            <div class="accent-pill amber" onclick="PageTools.setAccent('amber')" title="Amber"></div>
+            <div class="accent-pill cyan" onclick="PageTools.setAccent('cyan')" title="Cyan"></div>
+          </div>
         </div>
-      </div>
-      <div class="setting-group">
-        <label>Data Management</label>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">storage</span> Data Management</h3>
         <div class="data-actions">
-          <button class="btn-data" onclick="Tools.exportData()">Export Data</button>
+          <button class="btn-data" onclick="Tools.exportData()"><span class="material-icons">download</span> Export Data</button>
           <label class="btn-data">
-            Import Data
+            <span class="material-icons">upload</span> Import Data
             <input type="file" accept="application/json" onchange="Tools.importData(this)" style="display:none;" />
           </label>
-          <button class="btn-data danger" onclick="Tools.resetData()">Reset Dashboard</button>
+          <button class="btn-data danger" onclick="Tools.resetData()"><span class="material-icons">restart_alt</span> Reset Dashboard</button>
         </div>
-      </div>
-      <div class="setting-group">
-        <label>Actions</label>
+      </section>
+
+      <section class="settings-section">
+        <h3 class="settings-section-title"><span class="material-icons">bolt</span> Quick Actions</h3>
         <div class="data-actions">
-          <button class="btn-data" onclick="UI.openModal('modal-add')">Add Tool</button>
-          <button class="btn-data" onclick="UI.openAboutModal()">About</button>
+          <button class="btn-data" onclick="UI.openModal('modal-add')"><span class="material-icons">add_box</span> Add Tool</button>
+          <button class="btn-data" onclick="UI.openAboutModal()"><span class="material-icons">info</span> About</button>
+        </div>
+      </section>
+    </div>
+    <div class="form-actions">
+      <button type="button" class="btn-primary" onclick="UI.closeModal()">Done</button>
+    </div>
+  </div>
+
+  <!-- Tool Actions Modal -->
+  <div id="modal-tool-actions" class="modal">
+    <h2 id="tool-actions-title">Tool Actions</h2>
+    <div id="tool-actions-content" class="tool-actions-content">
+      <div class="action-section">
+        <h3>URLs</h3>
+        <div id="tool-actions-urls" class="url-list-compact"></div>
+      </div>
+      <div class="action-section">
+        <h3>Management</h3>
+        <div class="management-actions">
+          <button id="btn-copy-all" class="btn-data"><span class="material-icons">content_copy</span> Copy All URLs</button>
+          <button id="btn-edit-tool" class="btn-data"><span class="material-icons">edit</span> Edit Tool</button>
+          <button id="btn-delete-tool" class="btn-data danger"><span class="material-icons">delete</span> Delete Tool</button>
         </div>
       </div>
     </div>
@@ -132,6 +164,7 @@
     </div>
   </div>
 
+    <div id="toast" class="toast"></div>
     <script type="module" src="js/main.js"></script>
 </body>
 </html>
