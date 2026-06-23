@@ -4,21 +4,40 @@ import { PageTools } from './tools.js';
 
 export const Core = {
   async init() {
+    this.migrateFromOldKeys();
     await this.loadCategories();
     await this.loadData();
     UI.init();
     PageTools.init();
   },
 
+  migrateFromOldKeys() {
+    const STORAGE_KEY = "nex_bookmarks_links_v1";
+    const COLLAPSE_KEY = "nex_bookmarks_collapsed_v1";
+    const migrations = [
+      { old: 'necs_hub_links_v1', new: STORAGE_KEY },
+      { old: 'necs_hub_collapsed_v1', new: COLLAPSE_KEY },
+      { old: 'hub_theme', new: 'nex_bookmarks_theme' },
+      { old: 'hub_accent', new: 'nex_bookmarks_accent' }
+    ];
+
+    migrations.forEach(({ old, new: newKey }) => {
+      const val = localStorage.getItem(old);
+      if (val && !localStorage.getItem(newKey)) {
+        localStorage.setItem(newKey, val);
+      }
+    });
+  },
+
   async loadCategories() {
     try {
-      const res = await fetch(`necs_cat.json?t=${new Date().getTime()}`);
+      const res = await fetch(`nex_cat.json?t=${new Date().getTime()}`);
       if (res.ok) {
         const cats = await res.json();
         Object.assign(CAT_ICONS, cats);
       }
     } catch (e) {
-      console.warn("Could not load necs_cat.json", e);
+      console.warn("Could not load nex_cat.json", e);
     }
   },
 
@@ -48,7 +67,7 @@ export const Core = {
 
   async migrateFromJSON() {
     try {
-      const res = await fetch(`necs_links.json?t=${new Date().getTime()}`);
+      const res = await fetch(`nex_links.json?t=${new Date().getTime()}`);
       let raw = [];
       if (res.ok) raw = await res.json();
 
