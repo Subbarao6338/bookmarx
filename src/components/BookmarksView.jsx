@@ -5,13 +5,10 @@ import EmptyState from './EmptyState';
 import SafeHighlight from './SafeHighlight';
 import { storage } from '../utils/storage';
 
-// Import initial data (Vite will bundle these)
-import defaultCats from '../../data/url_cat.json';
-import defaultLinks from '../../data/url_links.json';
-import privateCats from '../../data/necs_cat.json';
-import privateLinks from '../../data/necs_links.json';
+import necsCats from '../../data/necs_cat.json';
+import necsLinks from '../../data/necs_links.json';
 
-const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
+const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, hideUrls, hideIcons, showStats, openInNewTab }) => {
   const [links, setLinks] = useState([]);
   const [isUrlModalOpen, setIsUrlModalOpen] = useState(false);
   const [selectedLinkForUrls, setSelectedLinkForUrls] = useState(null);
@@ -44,51 +41,31 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
   const [collapsedCategories, setCollapsedCategories] = useState({});
-  const prevProfileIdRef = React.useRef(profileId);
 
   useEffect(() => {
-    if (!profileId) return;
-    const isProfileChange = prevProfileIdRef.current !== profileId;
-    prevProfileIdRef.current = profileId;
-
     setLoading(true);
 
-    // Load data from localStorage or initial JSONs
-    let storedLinks = storage.getJSON(`hub_links_p${profileId}`);
-    let storedCats = storage.getJSON(`hub_cats_p${profileId}`);
+    let storedLinks = storage.getJSON(`hub_links_necs`);
+    let storedCats = storage.getJSON(`hub_cats_necs`);
 
     if (!storedLinks) {
-        if (profileId === 1) storedLinks = defaultLinks;
-        else if (profileId === 2) storedLinks = privateLinks;
-        else if (profileId === 3) storedLinks = [...defaultLinks, ...privateLinks];
-        else storedLinks = [];
-
-        // Add unique IDs if missing
-        storedLinks = storedLinks.map((l, index) => ({
-            id: l.id || `l-${profileId}-${index}-${Date.now()}`,
+        storedLinks = necsLinks.map((l, index) => ({
+            id: l.id || `l-necs-${index}-${Date.now()}`,
             ...l,
-            profile_id: profileId,
             is_pinned: l.is_pinned || false
         }));
-        storage.setJSON(`hub_links_p${profileId}`, storedLinks);
+        storage.setJSON(`hub_links_necs`, storedLinks);
     }
 
     if (!storedCats) {
-        if (profileId === 1) storedCats = defaultCats;
-        else if (profileId === 2) storedCats = privateCats;
-        else if (profileId === 3) storedCats = { ...defaultCats, ...privateCats };
-        else storedCats = {};
-        storage.setJSON(`hub_cats_p${profileId}`, storedCats);
+        storedCats = necsCats;
+        storage.setJSON(`hub_cats_necs`, storedCats);
     }
 
     setLinks(storedLinks);
     setCategories(storedCats);
     setLoading(false);
-
-    if (isProfileChange) {
-        setActiveCategory('All');
-    }
-  }, [profileId, refreshTrigger]);
+  }, [refreshTrigger]);
 
   const currentLinks = Array.isArray(links) ? links : [];
   const filteredLinks = currentLinks.filter(l => {
@@ -125,7 +102,6 @@ const BookmarksView = ({ profileId, searchQuery, onEdit, onDelete, onPin, refres
     (grouped[cat] || (grouped[cat] = [])).push(l);
   });
 
-  // Sort bookmarks within each category: Pinned first
   Object.keys(grouped).forEach(cat => {
     grouped[cat].sort((a, b) => {
       if (a.is_pinned && !b.is_pinned) return -1;
@@ -379,7 +355,6 @@ const BookmarkCard = ({ link, idx, openInNewTab, onPin, onEdit, onDelete, handle
   const cardRef = React.useRef(null);
 
   const startPress = (e) => {
-    // Only handle left clicks for mouse
     if (e.type === 'mousedown' && e.button !== 0) return;
 
     const coords = {
@@ -418,13 +393,6 @@ const BookmarkCard = ({ link, idx, openInNewTab, onPin, onEdit, onDelete, handle
         e.preventDefault();
     }
   };
-
-  let hostname = '';
-  try {
-    hostname = new URL(link.url.startsWith('http') ? link.url : 'http://' + link.url).hostname;
-  } catch (e) {
-    hostname = 'invalid-url';
-  }
 
   return (
     <div
@@ -497,7 +465,6 @@ const BookmarkIcon = ({ link, categoryIcon }) => {
   if (!src) return <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}><span className="material-icons">{categoryIcon}</span></div>;
 
   if (src.length < 5 && !src.includes('/') && !src.includes('.')) {
-    // Likely emoji or material icon name
     const isMaterialIcon = /^[a-z0-9_]+$/.test(src);
     return (
       <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)', fontSize: isMaterialIcon ? 'inherit' : '24px'}}>
