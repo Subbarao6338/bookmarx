@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
-const BookmarkModal = ({ link, profileId, profiles, enableProfiles, onClose, onSave }) => {
+const BookmarkModal = ({ link, onClose, onSave }) => {
   const [title, setTitle] = useState(link?.title || '');
   const [url, setUrl] = useState(link?.url || '');
   const [category, setCategory] = useState(link?.category || 'General');
-  const [selectedProfileId, setSelectedProfileId] = useState(link?.profile_id || profileId || 1);
   const [urls, setUrls] = useState(link?.urls ? link.urls.join('\n') : '');
   const [icon, setIcon] = useState(link?.icon || '');
+
+  // Even if unused in this simplified version, let's keep them if App.jsx might pass them
+  // or if they are part of the intended data structure.
+  const [profileId, setProfileId] = useState(link?.profile_id || 1);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     const urlsArray = urls.split('\n').map(u => u.trim()).filter(u => u !== '');
+
+    // Basic validation
+    if (urlsArray.length === 0 && !url) {
+      alert("Please provide at least one URL");
+      return;
+    }
+
     onSave({
       title,
       url: urlsArray[0] || url,
       category,
-      profile_id: parseInt(selectedProfileId),
+      profile_id: profileId,
       urls: urlsArray.length > 0 ? urlsArray : [url],
       icon: icon || null
     });
@@ -51,20 +61,6 @@ const BookmarkModal = ({ link, profileId, profiles, enableProfiles, onClose, onS
               required
             />
           </div>
-          {enableProfiles && (
-            <div className="form-group">
-              <label>Profile</label>
-              <select
-                className="pill"
-                value={selectedProfileId}
-                onChange={e => setSelectedProfileId(e.target.value)}
-              >
-                {profiles.map(p => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
-            </div>
-          )}
           <div className="form-group">
             <label>URLs (one per line)</label>
             <textarea

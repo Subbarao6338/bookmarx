@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import CategoryNav from './CategoryNav';
 import EmptyState from './EmptyState';
-import SafeHighlight from './SafeHighlight';
+import BookmarkCard from './BookmarkCard';
 import { storage } from '../utils/storage';
 
 import necsCats from '../../data/necs_cat.json';
@@ -15,13 +15,13 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [copiedId, setCopiedId] = useState(null);
 
-  const handleLongPress = (link, coords) => {
+  const handleLongPress = useCallback((link, coords) => {
     setSelectedLinkForUrls(link);
     setModalPosition(coords || { x: window.innerWidth / 2, y: window.innerHeight / 2 });
     setIsUrlModalOpen(true);
-  };
+  }, []);
 
-  const handleShare = async (link) => {
+  const handleShare = useCallback(async (link) => {
     if (navigator.share) {
       try {
         await navigator.share({ title: link.title, url: link.url });
@@ -30,13 +30,14 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
       navigator.clipboard.writeText(`${link.title}: ${link.url}`);
       alert("Link copied to clipboard!");
     }
-  };
+  }, []);
 
-  const handleCopy = (id, text) => {
+  const handleCopy = useCallback((id, text) => {
     navigator.clipboard.writeText(text);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
-  };
+  }, []);
+
   const [categories, setCategories] = useState({});
   const [activeCategory, setActiveCategory] = useState('All');
   const [loading, setLoading] = useState(true);
@@ -346,134 +347,6 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
       )}
     </>
   );
-};
-
-const BookmarkCard = ({ link, idx, openInNewTab, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery, noAnimation }) => {
-  const pressTimer = React.useRef(null);
-  const [isPressing, setIsPressing] = useState(false);
-  const isLongPressActive = React.useRef(false);
-  const cardRef = React.useRef(null);
-
-  const startPress = (e) => {
-    if (e.type === 'mousedown' && e.button !== 0) return;
-
-    const coords = {
-      x: e.clientX || (e.touches ? e.touches[0].clientX : 0),
-      y: e.clientY || (e.touches ? e.touches[0].clientY : 0)
-    };
-
-    cancelPress();
-    isLongPressActive.current = false;
-    setIsPressing(true);
-    pressTimer.current = setTimeout(() => {
-      isLongPressActive.current = true;
-      onLongPress(coords);
-      setIsPressing(false);
-    }, 500);
-  };
-
-  const cancelPress = () => {
-    setIsPressing(false);
-    if (pressTimer.current) {
-      clearTimeout(pressTimer.current);
-      pressTimer.current = null;
-    }
-  };
-
-  const handleClick = (e) => {
-    if (isLongPressActive.current) {
-      isLongPressActive.current = false;
-      return;
-    }
-    window.open(link.url, openInNewTab ? '_blank' : '_self');
-  };
-
-  const handleContextMenu = (e) => {
-    if (link.urls && link.urls.length > 1) {
-        e.preventDefault();
-    }
-  };
-
-  return (
-    <div
-      ref={cardRef}
-      className={`card ${noAnimation ? 'no-animation' : ''} ${isPressing ? 'is-pressing' : ''}`}
-      style={{'--delay': idx}}
-      onClick={handleClick}
-      onMouseDown={startPress}
-      onMouseUp={cancelPress}
-      onMouseLeave={cancelPress}
-      onTouchStart={startPress}
-      onTouchEnd={cancelPress}
-      onTouchMove={cancelPress}
-      onContextMenu={handleContextMenu}
-    >
-      <div className="card-header">
-        {!hideUrls && (
-          <div className="card-url">
-            <span>{link.url}</span>
-          </div>
-        )}
-      </div>
-
-      <div className="card-body">
-        {!hideIcons && <BookmarkIcon link={link} categoryIcon={categoryIcon || 'link'} />}
-        <div className="card-title-group">
-          <div className="card-title">
-            <SafeHighlight text={link.title} query={searchQuery} />
-          </div>
-        </div>
-      </div>
-
-      <div className="card-footer">
-        <span className="fallback-badge" title={`This bookmark has ${link.urls?.length || 1} URL(s). Long-press to see all.`}>
-          <span className="material-icons">layers</span>
-          {link.urls?.length || 1}
-        </span>
-        <button className={`pin-btn ${link.is_pinned ? 'active' : ''}`} onClick={(e) => { e.stopPropagation(); onPin(link); }} title={link.is_pinned ? 'Unpin' : 'Pin to Top'}>
-          <span className="material-icons">push_pin</span>
-        </button>
-      </div>
-    </div>
-  );
-};
-
-const BookmarkIcon = ({ link, categoryIcon }) => {
-  const getHostname = (url) => {
-    try {
-      return new URL(url.startsWith('http') ? url : 'http://' + url).hostname;
-    } catch (e) {
-      return '';
-    }
-  };
-
-  const [src, setSrc] = useState(link.icon || `https://www.google.com/s2/favicons?domain=${getHostname(link.url)}&sz=64`);
-  const [errorCount, setErrorCount] = useState(0);
-
-  const handleError = () => {
-    if (errorCount === 0 && link.optional_icon) {
-      setSrc(link.optional_icon);
-    } else if (errorCount === 1) {
-      const hostname = getHostname(link.url);
-      setSrc(hostname ? `https://icons.duckduckgo.com/ip3/${hostname}.ico` : null);
-    } else {
-      setSrc(null);
-    }
-    setErrorCount(errorCount + 1);
-  };
-
-  if (!src) return <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)'}}><span className="material-icons">{categoryIcon}</span></div>;
-
-  if (src.length < 5 && !src.includes('/') && !src.includes('.')) {
-    const isMaterialIcon = /^[a-z0-9_]+$/.test(src);
-    return (
-      <div className="card-icon" style={{display:'grid', placeItems:'center', background:'var(--bg)', fontSize: isMaterialIcon ? 'inherit' : '24px'}}>
-        {isMaterialIcon ? <span className="material-icons">{src}</span> : src}
-      </div>
-    );
-  }
-
-  return <img src={src} className="card-icon" loading="lazy" onError={handleError} alt="" />;
 };
 
 export default BookmarksView;

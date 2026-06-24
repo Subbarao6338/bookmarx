@@ -18,16 +18,18 @@ function App() {
   const [accentColor, setAccentColor] = useLocalStorageState('hub_accent_color', 'indigo');
 
   const setTab = React.useCallback((tab, skipHistory = false) => {
-    setCurrentTab('bookmarks');
+    setCurrentTab(tab);
     if ('vibrate' in navigator) navigator.vibrate([10, 5, 10]);
     if (!skipHistory) {
-      window.history.pushState({ tab: 'bookmarks' }, '', `?tab=bookmarks`);
+      window.history.pushState({ tab: tab }, '', `?tab=${tab}`);
     }
   }, []);
 
   useEffect(() => {
     const handlePopState = (event) => {
-      setCurrentTab('bookmarks');
+      if (event.state && event.state.tab) {
+        setCurrentTab(event.state.tab);
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -46,11 +48,9 @@ function App() {
   }, [searchActive]);
 
   useEffect(() => {
-    setCurrentTab('bookmarks');
     const params = new URLSearchParams(window.location.search);
-    if (params.get('tab') !== 'bookmarks') {
-      window.history.replaceState({ tab: 'bookmarks' }, '', `?tab=bookmarks`);
-    }
+    const tab = params.get('tab') || 'bookmarks';
+    setCurrentTab(tab);
   }, []);
 
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -278,17 +278,19 @@ function App() {
               <span>Refreshing...</span>
             </div>
           )}
-          <BookmarksView
-            searchQuery={searchQuery}
-            onPin={togglePin}
-            onDelete={deleteLink}
-            onEdit={(link) => { setEditingLink(link); setIsBookmarkOpen(true); }}
-            refreshTrigger={refreshTrigger}
-            hideUrls={hideBookmarkUrls}
-            hideIcons={hideBookmarkIcons}
-            showStats={showStats}
-            openInNewTab={openInNewTab}
-          />
+          {currentTab === 'bookmarks' && (
+            <BookmarksView
+              searchQuery={searchQuery}
+              onPin={togglePin}
+              onDelete={deleteLink}
+              onEdit={(link) => { setEditingLink(link); setIsBookmarkOpen(true); }}
+              refreshTrigger={refreshTrigger}
+              hideUrls={hideBookmarkUrls}
+              hideIcons={hideBookmarkIcons}
+              showStats={showStats}
+              openInNewTab={openInNewTab}
+            />
+          )}
         </div>
 
         <button
