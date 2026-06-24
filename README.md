@@ -1,49 +1,43 @@
-# Nex Bookmarks
+# Epic Toolbox
 
-![Nex Bookmarks Icon](./perchance.png)
+A unified ecosystem of essential tools, designed for professional efficiency and streamlined workflows. This application consolidates multiple utility hubs into a single, high-performance interface with a modern Material Design system.
 
-A personal dashboard to organize and access your favorite websites.
+## 🛠️ Core Hubs
 
-## Features
+1.  **Document Tools**: Integrated PDF, Image, and Text utilities. Edit, convert, and translate documents with ease.
+2.  **Developer Hub**: Essential tools for engineers—JSON formatters, Unit converters, Color pickers, and Security utilities.
+3.  **Data Science**: Statistical analysis, data profiling, mock data generation, and financial calculators.
+4.  **Network Hub**: IP info, DNS lookups, WHOIS, SSL checks, and Subnet calculators.
+5.  **Web & Social Tools**: Media downloaders and web archiving utilities.
+6.  **AI Hub**: Image generation, chat assistants, and local sentiment analysis.
+7.  **Date & Time Tools**: World clocks, Pomodoro timers, Stopwatch, and Timestamp converters.
 
-- **Categorized View**: Links are automatically grouped by categories like AI, Productivity, Media, Social, and Streaming.
-- **Search**: Real-time filtering by title or URL.
-- **Local Storage**: Your changes (adding, editing, deleting links) are saved locally in your browser (`nex_bookmarks_links_v1`), so they persist across sessions.
-- **Dark/Light Mode**: Toggle between themes based on your preference.
-- **Responsive Design**: Works on desktop and mobile devices.
-- **Import/Export**: Backup your links to a JSON file and restore them later.
-- **Privacy Focused**: No external tracking; everything runs locally.
+## 🚀 Features
 
-## Getting Started
+*   **Professional UI**: Clean, Material-inspired cards with smooth interactive states.
+*   **Performance**: Lazy-loaded hubs and optimized React components for maximum speed.
+*   **PWA Support**: Fully installable with offline capabilities via service workers.
+*   **Customization**: Material Expressive color palettes and theme modes (Light/Dark/System).
+*   **Privacy First**: Local-first processing for sensitive tools (Hashing, Password Gen, Image Blur).
 
-1. **Open the Dashboard**: Simply open `index.html` in your web browser.
-2. **Initial Data**: The app loads initial data from `nex_links.json`.
-3. **Customize**:
-   - Click the **+** button to add new tools.
-   - Use the edit/delete buttons on cards to manage your tools.
-   - Toggle the theme using the moon/sun icon in the top bar.
+## 💻 Tech Stack
 
-## File Structure
+*   **Frontend**: React 18, Vite, CSS3 (Material Expressive Design).
+*   **Backend**: Python (FastAPI) for heavy processing (Document translation, YT-DLP).
+*   **Libraries**: jsPDF, pdf-lib, PapaParse, Tesseract.js, Material Icons.
 
-- `index.html`: The main entry point for the application.
-- `js/`: Directory containing the application logic (formerly `hub.js`).
-- `style.css`: Styles for the application.
-- `nex_links.json`: The default list of links used to populate the dashboard if no local data is found.
+## 💻 Installation
 
-## Customization
+```bash
+# Install dependencies
+npm install
+pip install -r requirements.txt
 
-You can manually edit `nex_links.json` to change the default set of links that load for a new user (or if you clear your local storage).
+# Start development server
+npm run dev
 
-Modify the `nex_links.json` file with the following structure:
-
-```json
-[
-  {
-    "title": "Example Title",
-    "url": "https://example.com",
-    "optional_icon": "https://example.com/favicons/favicon.ico",
-    "urls": ["multiple urls separated by comma"],
-    "category": "Utilities"
-  }
-]
+# Start API server
+python3 -m uvicorn api.index:app --port 8000
 ```
+
+Built for professionals who value speed and simplicity.

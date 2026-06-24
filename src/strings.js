@@ -1,0 +1,50 @@
+/**
+ * Epic Toolbox - Externalized Strings
+ * Consolidates all UI text for localization readiness and consistency.
+ */
+export const STRINGS = {
+  common: {
+    back: "Back",
+    loading: "Loading tool...",
+    error: "An unexpected error occurred. Please try again.",
+    detecting: "Detecting...",
+    searchPlaceholder: "Search tools...",
+    emptyStateTitle: "No tools found",
+    emptyStateBody: "Try searching for something else or explore different categories.",
+    pinnerEmptyState: "No tools pinned yet — add your favorites to get started."
+  },
+  tools: {
+    travel: {
+        worldClock: "World Clock",
+        timezoneConv: "Timezone Converter",
+        packingList: "Packing List",
+        addItem: "Add travel item..."
+    },
+    finance: {
+        vat: "VAT Calculator",
+        inflation: "Inflation",
+        loan: "Loan Calculator",
+        compound: "Compound Interest",
+        cagr: "CAGR",
+        dcf: "DCF (NPV)"
+    },
+    security: {
+        rsa: "RSA Key Generation",
+        hmac: "HMAC Signer",
+        privacyAuditor: "Privacy Auditor",
+        strengthMeter: "Password Strength"
+    },
+    audio: {
+        frequency: "Frequency Generator",
+        metronome: "Metronome",
+        tuner: "Instrument Tuner"
+    },
+    devops: {
+        jwt: "JWT Decoder",
+        cron: "Cron Generator",
+        sql: "SQL Formatter",
+        http: "HTTP Client",
+        regex: "Regex Tester"
+    }
+  }
+};
