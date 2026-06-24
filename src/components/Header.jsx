@@ -1,23 +1,17 @@
 import React, { memo } from 'react';
 
-const Header = memo(({ appName, currentProfile, profiles, setView, hideBookmarks, hideToolbox, currentTab, children }) => {
-  const profile = profiles.find(p => p.name === currentProfile) || { icon: 'inbox' };
-
+const Header = memo(({ appName, setView, currentTab, children }) => {
   return (
     <header className="top-bar glass-card">
       <div
         className="logo-container"
-        onClick={() => {
-          if (hideBookmarks) setView('toolbox');
-          else if (hideToolbox) setView('bookmarks');
-          else setView(currentTab === 'bookmarks' ? 'toolbox' : 'bookmarks');
-        }}
+        onClick={() => setView('bookmarks')}
       >
         <div className="logo-icon-wrapper">
             <img src="/assets/favicon.svg" className="app-logo-img" alt="Logo" style={{ width: '28px', height: '28px' }} />
         </div>
         <h1 className="page-title">
-          {appName || 'Epic Toolbox'}
+          {appName || 'NECS Bookmarks'}
         </h1>
       </div>
       <div className="top-actions">
