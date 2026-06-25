@@ -3,3 +3,9 @@ legacy/
 .git/
 tests/
 test-results/
+verification/
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.webm

@@ -1,4 +1,4 @@
-import React, { useState, useRef, memo } from 'react';
+import React, { useState, useRef, memo, useCallback } from 'react';
 import SafeHighlight from './SafeHighlight';
 import BookmarkIcon from './BookmarkIcon';
 
@@ -8,7 +8,15 @@ const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onEdit, onDelete, h
   const isLongPressActive = useRef(false);
   const cardRef = useRef(null);
 
-  const startPress = (e) => {
+  const cancelPress = useCallback(() => {
+    setIsPressing(false);
+    if (pressTimer.current) {
+      clearTimeout(pressTimer.current);
+      pressTimer.current = null;
+    }
+  }, []);
+
+  const startPress = useCallback((e) => {
     if (e.type === 'mousedown' && e.button !== 0) return;
 
     const coords = {
@@ -24,29 +32,21 @@ const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onEdit, onDelete, h
       onLongPress(coords);
       setIsPressing(false);
     }, 500);
-  };
+  }, [cancelPress, onLongPress]);
 
-  const cancelPress = () => {
-    setIsPressing(false);
-    if (pressTimer.current) {
-      clearTimeout(pressTimer.current);
-      pressTimer.current = null;
-    }
-  };
-
-  const handleClick = (e) => {
+  const handleClick = useCallback((e) => {
     if (isLongPressActive.current) {
       isLongPressActive.current = false;
       return;
     }
     window.open(link.url, openInNewTab ? '_blank' : '_self');
-  };
+  }, [link.url, openInNewTab]);
 
-  const handleContextMenu = (e) => {
+  const handleContextMenu = useCallback((e) => {
     if (link.urls && link.urls.length > 1) {
         e.preventDefault();
     }
-  };
+  }, [link.urls]);
 
   return (
     <div
