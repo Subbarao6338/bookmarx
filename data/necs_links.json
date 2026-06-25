@@ -1,5 +1,11 @@
 [
   {
+    "title": "Epic Bookmarks",
+    "url": "https://epic-bookmarx.vercel.app/",
+    "urls": ["https://epic-bookmarx.vercel.app/"],
+    "category": "Productivity",
+  },
+  {
     "title": "Proton Pass",
     "url": "https://pass.proton.me",
     "urls": [
