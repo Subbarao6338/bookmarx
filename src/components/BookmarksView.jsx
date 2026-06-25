@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { createPortal } from 'react-dom';
 import CategoryNav from './CategoryNav';
 import EmptyState from './EmptyState';
@@ -68,8 +68,9 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
     setLoading(false);
   }, [refreshTrigger]);
 
-  const currentLinks = Array.isArray(links) ? links : [];
-  const filteredLinks = currentLinks.filter(l => {
+  const currentLinks = useMemo(() => Array.isArray(links) ? links : [], [links]);
+
+  const filteredLinks = useMemo(() => currentLinks.filter(l => {
     if (l.is_internal || l.isInternal) return false;
 
     let matchesSearch = true;
@@ -95,48 +96,53 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
     }
 
     return matchesSearch && matchesCat;
-  });
+  }), [currentLinks, searchQuery, activeCategory]);
 
-  const grouped = {};
-  filteredLinks.forEach(l => {
-    const cat = l.category || 'Uncategorized';
-    (grouped[cat] || (grouped[cat] = [])).push(l);
-  });
-
-  Object.keys(grouped).forEach(cat => {
-    grouped[cat].sort((a, b) => {
-      if (a.is_pinned && !b.is_pinned) return -1;
-      if (!a.is_pinned && b.is_pinned) return 1;
-      return (a.title || '').localeCompare(b.title || '');
+  const { grouped, cats } = useMemo(() => {
+    const grouped = {};
+    filteredLinks.forEach(l => {
+      const cat = l.category || 'Uncategorized';
+      (grouped[cat] || (grouped[cat] = [])).push(l);
     });
-  });
 
-  const cats = Object.keys(grouped).sort();
+    Object.keys(grouped).forEach(cat => {
+      grouped[cat].sort((a, b) => {
+        if (a.is_pinned && !b.is_pinned) return -1;
+        if (!a.is_pinned && b.is_pinned) return 1;
+        return (a.title || '').localeCompare(b.title || '');
+      });
+    });
 
-  const toggleCategoryCollapse = (cat) => {
+    return { grouped, cats: Object.keys(grouped).sort() };
+  }, [filteredLinks]);
+
+  const toggleCategoryCollapse = useCallback((cat) => {
     setCollapsedCategories(prev => ({ ...prev, [cat]: !prev[cat] }));
-  };
+  }, []);
 
-  const collapseAll = () => {
+  const collapseAll = useCallback(() => {
     const newCollapsed = {};
     cats.forEach(cat => newCollapsed[cat] = true);
     setCollapsedCategories(newCollapsed);
-  };
+  }, [cats]);
 
-  const expandAll = () => {
+  const expandAll = useCallback(() => {
     setCollapsedCategories({});
-  };
+  }, []);
 
-  const stats = {};
-  const visibleCategories = {};
-  currentLinks.forEach(l => {
-    if (l.is_internal || l.isInternal) return;
-    const cat = l.category || 'Uncategorized';
-    stats[cat] = (stats[cat] || 0) + 1;
-    visibleCategories[cat] = categories[cat] || 'folder';
-  });
-  const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
-  const pinnedCount = currentLinks.filter(l => l.is_pinned).length;
+  const { stats, visibleCategories, totalCount, pinnedCount } = useMemo(() => {
+    const stats = {};
+    const visibleCategories = {};
+    currentLinks.forEach(l => {
+      if (l.is_internal || l.isInternal) return;
+      const cat = l.category || 'Uncategorized';
+      stats[cat] = (stats[cat] || 0) + 1;
+      visibleCategories[cat] = categories[cat] || 'folder';
+    });
+    const totalCount = Object.values(stats).reduce((a, b) => a + b, 0);
+    const pinnedCount = currentLinks.filter(l => l.is_pinned).length;
+    return { stats, visibleCategories, totalCount, pinnedCount };
+  }, [currentLinks, categories]);
 
   if (loading) return (
     <div style={{ padding: '2rem' }}>
