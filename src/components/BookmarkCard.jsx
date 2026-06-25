@@ -2,7 +2,7 @@ import React, { useState, useRef, memo, useCallback } from 'react';
 import SafeHighlight from './SafeHighlight';
 import BookmarkIcon from './BookmarkIcon';
 
-const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onEdit, onDelete, handleShare, handleCopy, isCopied, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery, noAnimation }) => {
+const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery, noAnimation }) => {
   const pressTimer = useRef(null);
   const [isPressing, setIsPressing] = useState(false);
   const isLongPressActive = useRef(false);
@@ -62,21 +62,6 @@ const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onEdit, onDelete, h
       onTouchMove={cancelPress}
       onContextMenu={handleContextMenu}
     >
-      <div className="card-actions">
-        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); onDelete(link.id); }} title="Delete Bookmark">
-          <span className="material-icons">delete</span>
-        </button>
-        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); onEdit(link); }} title="Edit Bookmark">
-          <span className="material-icons">edit</span>
-        </button>
-        <button className="icon-btn" onClick={(e) => { e.stopPropagation(); handleShare(link); }} title="Share Bookmark">
-          <span className="material-icons">share</span>
-        </button>
-        <button className={`icon-btn ${isCopied ? 'copy-success' : ''}`} onClick={(e) => { e.stopPropagation(); handleCopy(link.id, link.url); }} title="Copy URL">
-          <span className="material-icons">{isCopied ? 'check' : 'content_copy'}</span>
-        </button>
-      </div>
-
       <div className="card-header">
         {!hideUrls && (
           <div className="card-url">

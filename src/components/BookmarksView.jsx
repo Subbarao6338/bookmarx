@@ -161,7 +161,6 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
     if (!selectedLinkForUrls) return;
     const allUrls = selectedLinkForUrls.urls || [selectedLinkForUrls.url];
     navigator.clipboard.writeText(allUrls.join('\n'));
-    alert("All URLs copied to clipboard!");
   };
 
   const getModalStyle = () => {
@@ -230,8 +229,16 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
               ))}
             </div>
             <div className="modal-footer-actions" style={{ flexDirection: 'column', gap: '10px' }}>
-              <button type="button" className="pill btn-primary" style={{width: '100%'}} onClick={copyAllUrls}>
-                <span className="material-icons">content_copy</span> Copy All URLs
+              <button type="button" className={`pill btn-primary ${copiedId === 'all' ? 'copy-success' : ''}`} style={{width: '100%'}} onClick={() => {
+                  if (selectedLinkForUrls.urls?.length > 1) {
+                    copyAllUrls();
+                    setCopiedId('all');
+                    setTimeout(() => setCopiedId(null), 2000);
+                  } else {
+                    handleCopy('all', selectedLinkForUrls.url);
+                  }
+                }}>
+                <span className="material-icons">{copiedId === 'all' ? 'check' : 'content_copy'}</span> {selectedLinkForUrls.urls?.length > 1 ? (copiedId === 'all' ? 'All URLs Copied' : 'Copy All URLs') : (copiedId === 'all' ? 'URL Copied' : 'Copy URL')}
               </button>
               <div style={{ display: 'flex', gap: '10px', width: '100%' }}>
                 <button className="pill" onClick={() => { setIsUrlModalOpen(false); handleShare(selectedLinkForUrls); }}>
@@ -281,11 +288,6 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
                   idx={idx}
                   openInNewTab={openInNewTab}
                   onPin={onPin}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  handleShare={handleShare}
-                  handleCopy={handleCopy}
-                  isCopied={copiedId === link.id}
                   onLongPress={(coords) => handleLongPress(link, coords)}
                   categoryIcon={categories[link.category]}
                   hideIcons={hideIcons}
@@ -334,11 +336,6 @@ const BookmarksView = ({ searchQuery, onEdit, onDelete, onPin, refreshTrigger, h
                   idx={idx}
                   openInNewTab={openInNewTab}
                   onPin={onPin}
-                  onEdit={onEdit}
-                  onDelete={onDelete}
-                  handleShare={handleShare}
-                  handleCopy={handleCopy}
-                  isCopied={copiedId === link.id}
                   onLongPress={(coords) => handleLongPress(link, coords)}
                   categoryIcon={categories[cat]}
                   hideIcons={hideIcons}
