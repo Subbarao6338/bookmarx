@@ -406,8 +406,9 @@ function handleStatsRequest(links) {
   else if (score >= 70) { grade = 'C'; gradeColor = '#FF9800'; }
   else if (score >= 60) { grade = 'D'; gradeColor = '#FF9800'; }
 
-  // Dynamic suggestion list with Alpine.js filtering/dismiss behavior
-  const suggestionsArrayJson = JSON.stringify(deductMsgs.map((m, idx) => ({ id: idx, text: m, hidden: false })));
+  // Dynamic suggestion list with Alpine.js filtering/dismiss behavior. Escape single quotes to avoid HTML parsing bugs.
+  const suggestionsArrayJson = JSON.stringify(deductMsgs.map((m, idx) => ({ id: idx, text: m, hidden: false })))
+    .replace(/'/g, "&apos;");
 
   const html = `
     <div class="stats-section fade-in" style="text-align: left;">
@@ -567,6 +568,10 @@ function handleDiagnosticsResponse({ browser, connectionSpeed, issueType, descri
 
   healthScore = Math.max(10, healthScore);
 
+  // Dynamic remedies list with Alpine.js interaction. Escape single quotes to avoid HTML attribute quoting issues.
+  const remediesJson = JSON.stringify(fixes.map((f, i) => ({ id: i, text: f, solved: false })))
+    .replace(/'/g, "&apos;");
+
   const html = `
     <div class="card fade-in" style="padding: 1.5rem; border: 1px solid var(--border); background: var(--bg-surface); margin-top: 1.5rem; border-radius: var(--radius-md);">
       <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
@@ -599,7 +604,7 @@ function handleDiagnosticsResponse({ browser, connectionSpeed, issueType, descri
 
       <!-- Alpine Checklist for remedies -->
       <div x-data='{
-        remedies: ${JSON.stringify(fixes.map((f, i) => ({ id: i, text: f, solved: false })))},
+        remedies: ${remediesJson},
         get remaining() { return this.remedies.filter(r => !r.solved).length; }
       }' style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 1rem;">
         <span class="smallest font-bold uppercase" style="display: block; margin-bottom: 8px;">Recommended Fixes & Actions (Interactive):</span>

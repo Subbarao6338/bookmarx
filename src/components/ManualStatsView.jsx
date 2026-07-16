@@ -82,14 +82,16 @@ const ManualStatsView = () => {
 
   // Hook HTMX swap with Alpine.js to compile dynamic nodes
   useEffect(() => {
-    const handleSwap = () => {
+    const handleSwap = (event) => {
       if (window.Alpine) {
         setTimeout(() => {
           try {
-            if (typeof window.Alpine.discoverUninitializedComponents === 'function') {
+            // Target the swapped container specifically instead of document.body for optimal performance
+            const targetElement = event.detail?.target || document.body;
+            if (typeof window.Alpine.initTree === 'function') {
+              window.Alpine.initTree(targetElement);
+            } else if (typeof window.Alpine.discoverUninitializedComponents === 'function') {
               window.Alpine.discoverUninitializedComponents();
-            } else if (typeof window.Alpine.initTree === 'function') {
-              window.Alpine.initTree(document.body);
             }
           } catch (e) {
             console.warn("Alpine discovery failed:", e);
