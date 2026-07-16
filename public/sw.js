@@ -64,6 +64,26 @@ async function handleApiRequest(request, url) {
         { headers: { 'Content-Type': 'text/html' } }
       );
     }
+  } else if (url.pathname === '/api/diagnostics') {
+    if (request.method === 'POST') {
+      try {
+        const formData = await request.formData();
+        const browser = formData.get('browser') || 'Unknown';
+        const connectionSpeed = formData.get('connectionSpeed') || 'Unknown';
+        const issueType = formData.get('issueType') || 'None';
+        const description = formData.get('description') || '';
+        return handleDiagnosticsResponse({ browser, connectionSpeed, issueType, description });
+      } catch (e) {
+        console.error("Error processing API diagnostics request:", e);
+        return new Response(
+          `<div class="card" style="border: 1px solid var(--danger); background: rgba(255, 0, 0, 0.05); padding: 1rem; text-align: center;">
+            <p class="smallest">Error running system diagnostics.</p>
+          </div>`,
+          { headers: { 'Content-Type': 'text/html' } }
+        );
+      }
+    }
+    return new Response("Method Not Allowed", { status: 405 });
   }
 
   return new Response("API Endpoint Not Found", { status: 404 });
@@ -189,6 +209,35 @@ function handleManualRequest(section) {
             </ul>
           </div>
         </div>
+
+        <!-- Alpine.js Onboarding checklist -->
+        <div class="card" x-data="{
+          checklist: [
+            { id: 'search', text: 'Used Search bar / Shortcut (/)', done: false },
+            { id: 'pin', text: 'Pinned a bookmark', done: false },
+            { id: 'pb', text: 'Configured PocketBase Sync', done: false },
+            { id: 'theme', text: 'Changed Accent Color or Theme', done: false }
+          ],
+          toggle(id) {
+            const item = this.checklist.find(i => i.id === id);
+            if (item) item.done = !item.done;
+          }
+        }" style="padding: 1.5rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); margin-top: 1.5rem;">
+          <h4 style="margin: 0 0 1rem 0; display: flex; align-items: center; gap: 8px;">
+            <span class="material-icons" style="color: var(--primary);">checklist</span>
+            Onboarding Interactive Checklist (Powered by Alpine.js)
+          </h4>
+          <p class="smallest opacity-7" style="margin-bottom: 1rem;">Explore the codebase and try checking off these key dashboard actions:</p>
+          <div style="display: flex; flex-direction: column; gap: 10px;">
+            <template x-for="item in checklist" :key="item.id">
+              <div @click="toggle(item.id)" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 10px; border-radius: var(--radius-sm); background: var(--primary-glow); border: 1px solid var(--border);">
+                <span class="material-icons" style="font-size: 1.2rem; color: var(--primary);" x-text="item.done ? 'check_box' : 'check_box_outline_blank'"></span>
+                <span class="smallest" :style="item.done ? 'text-decoration: line-through; opacity: 0.6;' : ''" x-text="item.text"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+
       </div>
     `;
   } else if (section === 'faq') {
@@ -201,37 +250,57 @@ function handleManualRequest(section) {
             Frequently Asked Questions
           </h3>
           <p style="line-height: 1.6; opacity: 0.9;">
-            Find quick answers to common technical and functional questions about the dashboard.
+            Find quick answers to common technical and functional questions about the dashboard. Click each card to expand!
           </p>
         </div>
 
         <div style="display: flex; flex-direction: column; gap: 1.25rem;">
-          <div class="card" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
-            <strong style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">Q: Where is my data saved and is it secure?</strong>
-            <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
-              All data is saved completely in your browser's Secure Local Storage. There are no server-side databases or third-party cloud synchronizations.
-              This means your link catalog, profile list, and personalized UI themes are completely confidential and owned entirely by you.
-            </p>
+
+          <!-- Accordion 1 with Alpine.js -->
+          <div class="card" x-data="{ open: false }" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); cursor: pointer;" @click="open = !open">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 1rem; margin: 0;">Q: Where is my data saved and is it secure?</strong>
+              <span class="material-icons" style="font-size: 1.2rem; transition: transform 0.2s;" :style="open ? 'transform: rotate(180deg)' : ''">expand_more</span>
+            </div>
+            <div x-show="open" style="margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem;" @click.stop>
+              <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
+                All data is saved completely in your browser's Secure Local Storage. There are no server-side databases or third-party cloud synchronizations unless you explicitly connect a PocketBase instance.
+                This means your link catalog, profile list, and personalized UI themes are completely confidential and owned entirely by you.
+              </p>
+            </div>
           </div>
 
-          <div class="card" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
-            <strong style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">Q: Can I backup, move, or share my bookmark collection?</strong>
-            <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
-              Absolutely! Open <strong>Settings</strong> and navigate to the <strong>Maintenance & Data</strong> section.
-              Click <strong>Export Data</strong> to download a complete, structured JSON file backup.
-              You can easily import this file on any other device or browser to restore your entire workspace instantly.
-            </p>
+          <!-- Accordion 2 with Alpine.js -->
+          <div class="card" x-data="{ open: false }" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); cursor: pointer;" @click="open = !open">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 1rem; margin: 0;">Q: Can I backup, move, or share my bookmark collection?</strong>
+              <span class="material-icons" style="font-size: 1.2rem; transition: transform 0.2s;" :style="open ? 'transform: rotate(180deg)' : ''">expand_more</span>
+            </div>
+            <div x-show="open" style="margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem;" @click.stop>
+              <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
+                Absolutely! Open <strong>Settings</strong> and navigate to the <strong>Maintenance & Data</strong> section.
+                Click <strong>Export Data</strong> to download a complete, structured JSON file backup.
+                You can easily import this file on any other device or browser to restore your entire workspace instantly.
+              </p>
+            </div>
           </div>
 
-          <div class="card" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface);">
-            <strong style="display: block; font-size: 1rem; margin-bottom: 0.5rem;">Q: What is the purpose of "Multiple URLs" on bookmarks?</strong>
-            <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
-              Many platforms have multiple portals or mirrors (e.g. Proton Mail, Notion, Gmail).
-              Our schema supports defining an array of fallback URLs (<code>urls</code>) for a single bookmark card.
-              Long-pressing the card allows you to view and select which precise URL you would like to open,
-              keeping your grid neat and clean while supporting highly redundant workflows.
-            </p>
+          <!-- Accordion 3 with Alpine.js -->
+          <div class="card" x-data="{ open: false }" style="padding: 1.25rem; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); cursor: pointer;" @click="open = !open">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+              <strong style="font-size: 1rem; margin: 0;">Q: What is the purpose of "Multiple URLs" on bookmarks?</strong>
+              <span class="material-icons" style="font-size: 1.2rem; transition: transform 0.2s;" :style="open ? 'transform: rotate(180deg)' : ''">expand_more</span>
+            </div>
+            <div x-show="open" style="margin-top: 0.75rem; border-top: 1px solid var(--border); padding-top: 0.75rem;" @click.stop>
+              <p class="smallest opacity-8" style="line-height: 1.5; margin: 0;">
+                Many platforms have multiple portals or mirrors (e.g. Proton Mail, Notion, Gmail).
+                Our schema supports defining an array of fallback URLs (<code>urls</code>) for a single bookmark card.
+                Long-pressing the card allows you to view and select which precise URL you would like to open,
+                keeping your grid neat and clean while supporting highly redundant workflows.
+              </p>
+            </div>
           </div>
+
         </div>
       </div>
     `;
@@ -355,6 +424,9 @@ function handleStatsRequest(links) {
     </div>
   `;
 
+  // Dynamic suggestion list with Alpine.js filtering/dismiss behavior
+  const suggestionsArrayJson = JSON.stringify(deductMsgs.map((m, idx) => ({ id: idx, text: m, hidden: false })));
+
   const html = `
     ${subNav}
     <div class="stats-section fade-in" style="text-align: left;">
@@ -436,22 +508,135 @@ function handleStatsRequest(links) {
             </div>
           </div>
 
-          ${deductMsgs.length > 0 ? `
-            <div style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
-              <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.5; display: block; margin-bottom: 6px;">Optimization Suggestions:</span>
-              <ul style="padding-left: 1.25rem; margin: 0; color: var(--text-muted); line-height: 1.4;" class="smallest">
-                ${deductMsgs.map(m => `<li style="margin-bottom: 4px;">${m}</li>`).join('')}
+          <!-- Interactive Alpine.js dynamic optimization suggestions checklist -->
+          <div x-data='{
+            suggestions: ${suggestionsArrayJson},
+            dismiss(id) {
+              const item = this.suggestions.find(i => i.id === id);
+              if (item) item.hidden = true;
+            },
+            get visibleCount() {
+              return this.suggestions.filter(i => !i.hidden).length;
+            }
+          }'>
+            <div x-show="visibleCount > 0" style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 0.75rem;">
+              <span style="font-size: 0.75rem; font-weight: 800; text-transform: uppercase; opacity: 0.5; display: block; margin-bottom: 6px;">Optimization Suggestions (Powered by Alpine.js):</span>
+              <ul style="padding: 0; margin: 0; list-style: none;" class="smallest">
+                <template x-for="s in suggestions" :key="s.id">
+                  <li x-show="!s.hidden" style="margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--primary-glow); padding: 4px 8px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                    <span x-text="s.text"></span>
+                    <button @click="dismiss(s.id)" class="icon-btn" style="padding: 2px; min-width: auto; height: auto; border: none; background: transparent; cursor: pointer;" title="Dismiss suggestion">
+                      <span class="material-icons" style="font-size: 1rem;">close</span>
+                    </button>
+                  </li>
+                </template>
               </ul>
             </div>
-          ` : `
-            <div style="margin-top: 1rem; color: #4CAF50; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;">
-              <span class="material-icons" style="font-size: 1rem;">check_circle</span> Perfect configuration health!
+            <div x-show="visibleCount === 0" style="margin-top: 1rem; color: #4CAF50; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;">
+              <span class="material-icons" style="font-size: 1.1rem;">check_circle</span> Perfect configuration or all suggestions completed!
             </div>
-          `}
+          </div>
+
         </div>
       </div>
     </div>
   `;
 
+  return new Response(html, { headers: { 'Content-Type': 'text/html' } });
+}
+
+// Tailored Diagnostics Analysis Response (Powered by AlpineJS & HTMX post)
+function handleDiagnosticsResponse({ browser, connectionSpeed, issueType, description }) {
+  let healthScore = 100;
+  let severity = "Optimal";
+  let severityColor = "#4CAF50";
+
+  const fixes = [];
+
+  if (issueType === 'slow') {
+    healthScore -= 30;
+    severity = "Performance Issue";
+    severityColor = "#FF9800";
+    fixes.push("Disable heavy glassmorphism transitions in settings panel.");
+    fixes.push("Try compact mode view to decrease rendering payload.");
+    fixes.push("Ensure service worker cache is active (Reload page).");
+  } else if (issueType === 'sync') {
+    healthScore -= 40;
+    severity = "Synchronicity Warning";
+    severityColor = "var(--danger)";
+    fixes.push("Verify PocketBase instance status URL in Settings > PocketBase Sync.");
+    fixes.push("Check API Rules / collection permissions on your database.");
+    fixes.push("Inspect browser network headers for CORS blockages.");
+  } else if (issueType === 'ui') {
+    healthScore -= 20;
+    severity = "Display Warning";
+    severityColor = "#FF9800";
+    fixes.push("Toggle 'Enable Animations' to reset transition styles.");
+    fixes.push("Change your browser theme mode (light/dark) or switch accent color.");
+    fixes.push("Clear browser layout cache or reset settings to defaults.");
+  } else {
+    fixes.push("Your system is running optimal default bookmarks!");
+    fixes.push("Perform a regular JSON backup of your current links.");
+  }
+
+  if (connectionSpeed === 'slow') {
+    healthScore -= 15;
+    fixes.push("Service Worker offline fallback is activated. PWA bookmarks will work offline!");
+  }
+
+  healthScore = Math.max(10, healthScore);
+
+  const html = `
+    <div class="card fade-in" style="padding: 1.5rem; border: 1px solid var(--border); background: var(--bg-surface); margin-top: 1.5rem; border-radius: var(--radius-md);">
+      <div style="display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 0.75rem; margin-bottom: 1rem; flex-wrap: wrap; gap: 10px;">
+        <h4 style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <span class="material-icons" style="color: ${severityColor};">troubleshoot</span>
+          Diagnostics Analysis Results
+        </h4>
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span class="smallest font-bold uppercase" style="color: ${severityColor};">${severity}</span>
+          <span class="badge" style="background: var(--primary-glow); border: 1px solid var(--border); color: var(--primary); font-weight: 800; padding: 4px 8px; border-radius: var(--radius-sm);">${healthScore}/100</span>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-bottom: 1rem;">
+        <div>
+          <span class="smallest opacity-6 font-bold uppercase block">Environment Status</span>
+          <div style="margin-top: 4px; font-size: 0.85rem;" class="smallest">
+            <div>Browser: <strong>${browser}</strong></div>
+            <div>Network: <strong>${connectionSpeed === 'slow' ? 'Slow / Offline (2G/3G)' : 'Fast / Broadband (4G/WiFi)'}</strong></div>
+          </div>
+        </div>
+        <div>
+          <span class="smallest opacity-6 font-bold uppercase block">Reported Category</span>
+          <div style="margin-top: 4px; font-size: 0.85rem;" class="smallest">
+            <div>Type: <strong>${issueType.toUpperCase()}</strong></div>
+            <div>Desc: <em style="opacity: 0.8;">${description ? `"${description}"` : 'No custom description provided.'}</em></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alpine Checklist for remedies -->
+      <div x-data='{
+        remedies: ${JSON.stringify(fixes.map((f, i) => ({ id: i, text: f, solved: false })))},
+        get remaining() { return this.remedies.filter(r => !r.solved).length; }
+      }' style="margin-top: 1rem; border-top: 1px dashed var(--border); padding-top: 1rem;">
+        <span class="smallest font-bold uppercase" style="display: block; margin-bottom: 8px;">Recommended Fixes & Actions (Interactive):</span>
+
+        <div style="display: flex; flex-direction: column; gap: 8px; margin-top: 8px;">
+          <template x-for="r in remedies" :key="r.id">
+            <div @click="r.solved = !r.solved" style="display: flex; align-items: center; gap: 10px; cursor: pointer; padding: 6px 10px; border-radius: var(--radius-sm); background: var(--primary-glow); border: 1px solid var(--border);">
+              <span class="material-icons" style="font-size: 1.1rem; color: var(--primary);" x-text="r.solved ? 'check_box' : 'check_box_outline_blank'"></span>
+              <span class="smallest" :style="r.solved ? 'text-decoration: line-through; opacity: 0.6;' : ''" x-text="r.text"></span>
+            </div>
+          </template>
+        </div>
+
+        <div x-show="remaining === 0" style="margin-top: 1rem; background: rgba(76, 175, 80, 0.15); border: 1px solid #4CAF50; color: #4CAF50; padding: 8px; border-radius: var(--radius-sm); text-align: center;" class="smallest font-bold">
+          All fixes executed! Reload the application to apply modifications.
+        </div>
+      </div>
+    </div>
+  `;
   return new Response(html, { headers: { 'Content-Type': 'text/html' } });
 }
