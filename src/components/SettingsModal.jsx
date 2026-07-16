@@ -224,6 +224,7 @@ const SettingsModal = ({
                 onChange={(e) => {
                   setPbUrl(e.target.value);
                   storage.set('hub_pb_url', e.target.value);
+                  storage.set('hub_pb_connected', 'false');
                 }}
                 placeholder="https://my-pocketbase.pockethost.io"
               />

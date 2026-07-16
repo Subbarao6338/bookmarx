@@ -1,4 +1,5 @@
 import PocketBase from 'pocketbase';
+import { storage } from './storage';
 import necsLinks from '../../data/necs_links.json';
 
 /**
@@ -11,9 +12,16 @@ export async function testPBConnection(url) {
     const pb = new PocketBase(url);
     pb.autoCancellation(false);
     const health = await pb.health.check();
-    return health.status === 200 || health.code === 200;
+    const success = health.status === 200 || health.code === 200;
+    if (success) {
+      storage.set('hub_pb_connected', 'true');
+    } else {
+      storage.set('hub_pb_connected', 'false');
+    }
+    return success;
   } catch (error) {
     console.error('PocketBase health check failed:', error);
+    storage.set('hub_pb_connected', 'false');
     return false;
   }
 }
@@ -68,14 +76,18 @@ async function authenticate(pb, email, password, isAdmin) {
 }
 
 /**
- * Pushes local bookmarks to PocketBase.
- * @param {object} config - PB Config (url, collection, email, password, isAdmin)
- * @param {Array} localLinks - Array of local link objects
- * @returns {Promise<{success: boolean, message: string}>}
+ * Helper to get a valid PocketBase instance for sync operations.
+ * If credentials (email/password) are provided, it attempts authentication.
+ * It returns the valid PocketBase instance if authentication is successful OR if the
+ * connection without authentication is allowed (indicated by the `hub_pb_connected`
+ * flag in localStorage), allowing sync without requiring `pb.authStore.isValid`.
+ *
+ * @param {object} config - PB Config (url, email, password, isAdmin)
+ * @returns {Promise<PocketBase|null>}
  */
-export async function pushToPocketBase(config, localLinks) {
-  const { url, collection = 'bookmarks', email, password, isAdmin = false } = config;
-  if (!url) return { success: false, message: 'PocketBase URL is required' };
+export async function getSyncInstance(config) {
+  const { url, email, password, isAdmin = false } = config;
+  if (!url) return null;
 
   try {
     const pb = new PocketBase(url);
@@ -83,10 +95,40 @@ export async function pushToPocketBase(config, localLinks) {
 
     const trimmedEmail = typeof email === 'string' ? email.trim() : '';
     const trimmedPassword = typeof password === 'string' ? password.trim() : '';
+
     if (trimmedEmail && trimmedPassword) {
       await authenticate(pb, trimmedEmail, trimmedPassword, isAdmin);
     } else {
       console.log('Skipping PocketBase authentication: Credentials are not provided.');
+    }
+
+    const isConnected = storage.getBoolean('hub_pb_connected', false);
+    if (pb.authStore.isValid || isConnected) {
+      return pb;
+    }
+
+    console.warn('PocketBase instance is not validly authenticated and hub_pb_connected is not true.');
+    return null;
+  } catch (error) {
+    console.error('Failed to get PocketBase sync instance:', error);
+    return null;
+  }
+}
+
+/**
+ * Pushes local bookmarks to PocketBase.
+ * @param {object} config - PB Config (url, collection, email, password, isAdmin)
+ * @param {Array} localLinks - Array of local link objects
+ * @returns {Promise<{success: boolean, message: string}>}
+ */
+export async function pushToPocketBase(config, localLinks) {
+  const { url, collection = 'bookmarks' } = config;
+  if (!url) return { success: false, message: 'PocketBase URL is required' };
+
+  try {
+    const pb = await getSyncInstance(config);
+    if (!pb) {
+      return { success: false, message: 'PocketBase is not connected or authenticated.' };
     }
 
     const pbCollection = pb.collection(collection);
@@ -152,19 +194,13 @@ export async function pushToPocketBase(config, localLinks) {
  * @returns {Promise<{success: boolean, message: string, links?: Array}>}
  */
 export async function pullFromPocketBase(config, currentLocalLinks) {
-  const { url, collection = 'bookmarks', email, password, isAdmin = false } = config;
+  const { url, collection = 'bookmarks' } = config;
   if (!url) return { success: false, message: 'PocketBase URL is required' };
 
   try {
-    const pb = new PocketBase(url);
-    pb.autoCancellation(false);
-
-    const trimmedEmail = typeof email === 'string' ? email.trim() : '';
-    const trimmedPassword = typeof password === 'string' ? password.trim() : '';
-    if (trimmedEmail && trimmedPassword) {
-      await authenticate(pb, trimmedEmail, trimmedPassword, isAdmin);
-    } else {
-      console.log('Skipping PocketBase authentication: Credentials are not provided.');
+    const pb = await getSyncInstance(config);
+    if (!pb) {
+      return { success: false, message: 'PocketBase is not connected or authenticated.' };
     }
 
     const pbCollection = pb.collection(collection);
