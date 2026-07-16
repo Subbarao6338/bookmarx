@@ -26,21 +26,47 @@ export async function testPBConnection(url) {
  * @param {boolean} isAdmin - Whether to authenticate as superuser/admin
  */
 async function authenticate(pb, email, password, isAdmin) {
-  if (!email || !password) return;
+  if (!email || !password) {
+    console.log('Skipping PocketBase authentication: Email or password is not provided.');
+    return;
+  }
 
+  console.log(`Attempting PocketBase authentication for email: ${email} (as Admin: ${isAdmin})`);
   if (isAdmin) {
-    // PocketBase v0.20+ superusers/admins authenticate via pb.admins or pb.collection('_superusers')
     try {
-      if (typeof pb.admins?.authWithPassword === 'function') {
+      // Try PocketBase legacy pb.admins first
+      if (pb.admins && typeof pb.admins.authWithPassword === 'function') {
         await pb.admins.authWithPassword(email, password);
-      } else {
-        await pb.collection('_superusers').authWithPassword(email, password);
+        console.log('Successfully authenticated as legacy admin/superuser.');
+        return;
       }
-    } catch (e) {
-      await pb.collection('users').authWithPassword(email, password);
+    } catch (e1) {
+      console.warn('PocketBase pb.admins authentication failed, trying _superusers collection:', e1.message);
+    }
+
+    try {
+      // Try PocketBase modern _superusers collection
+      await pb.collection('_superusers').authWithPassword(email, password);
+      console.log('Successfully authenticated as superuser via _superusers collection.');
+      return;
+    } catch (e2) {
+      console.warn('PocketBase _superusers collection authentication failed:', e2.message);
+      // Fallback to regular users collection only as a last resort
+      try {
+        await pb.collection('users').authWithPassword(email, password);
+        console.log('Successfully authenticated via users collection fallback.');
+        return;
+      } catch (e3) {
+        throw new Error(`Admin authentication failed. Superuser errors: [Admins: ${e2.message}]. Fallback error: [Users: ${e3.message}].`);
+      }
     }
   } else {
-    await pb.collection('users').authWithPassword(email, password);
+    try {
+      await pb.collection('users').authWithPassword(email, password);
+      console.log('Successfully authenticated as standard user via users collection.');
+    } catch (error) {
+      throw new Error(`Regular user authentication failed: ${error.message}`);
+    }
   }
 }
 

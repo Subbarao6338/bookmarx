@@ -13,8 +13,41 @@ import necsLinks from '../data/necs_links.json';
 import { pushToPocketBase } from './utils/pocketbase';
 
 function App() {
+  // All States & Refs declared at the top to prevent temporal dead zone (TDZ) errors
   const [appName, setAppName] = useLocalStorageState('hub_app_name', 'NECS Bookmarks');
   const [currentTab, setCurrentTab] = useState('bookmarks');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchActive, setSearchActive] = useState(false);
+  const [theme, setTheme] = useLocalStorageState('hub_theme', 'light');
+  const [accentColor, setAccentColor] = useLocalStorageState('hub_accent_color', 'indigo');
+  const [showBackToTop, setShowBackToTop] = useState(false);
+
+  // Additional Settings
+  const [isCompact, setIsCompact] = useLocalStorageState('hub_compact', false, 'boolean');
+  const [hideBookmarkUrls, setHideBookmarkUrls] = useLocalStorageState('hub_hide_bookmark_urls', false, 'boolean');
+  const [hideBookmarkIcons, setHideBookmarkIcons] = useLocalStorageState('hub_hide_bookmark_icons', false, 'boolean');
+  const [showStats, setShowStats] = useLocalStorageState('hub_show_stats', true, 'boolean');
+  const [autoFocusSearch, setAutoFocusSearch] = useLocalStorageState('hub_auto_focus_search', false, 'boolean');
+  const [openInNewTab, setOpenInNewTab] = useLocalStorageState('hub_open_newtab', true, 'boolean');
+
+  // Visual Settings
+  const [disableGlass, setDisableGlass] = useLocalStorageState('hub_disable_glass', false, 'boolean');
+  const [disableAnimations, setDisableAnimations] = useLocalStorageState('hub_disable_animations', false, 'boolean');
+  const [reducedMotion, setReducedMotion] = useLocalStorageState('hub_reduced_motion', false, 'boolean');
+  const [confirmDelete, setConfirmDelete] = useLocalStorageState('hub_confirm_delete', true, 'boolean');
+  const [enableHoverEffects, setEnableHoverEffects] = useLocalStorageState('hub_enable_hover_effects', true, 'boolean');
+
+  // UI Control States
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
+  const [editingLink, setEditingLink] = useState(null);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [deferredPrompt, setDeferredPrompt] = useState(null);
+
+  // Touch Gesture Refs
+  const touchStart = React.useRef(0);
+  const touchEnd = React.useRef(0);
 
   // Automatic background sync from JSON to Local Storage and PocketBase
   useEffect(() => {
@@ -105,10 +138,6 @@ function App() {
 
     syncJsonToStorageAndPB();
   }, []);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchActive, setSearchActive] = useState(false);
-  const [theme, setTheme] = useLocalStorageState('hub_theme', 'light');
-  const [accentColor, setAccentColor] = useLocalStorageState('hub_accent_color', 'indigo');
 
   const setTab = React.useCallback((tab, skipHistory = false) => {
     setCurrentTab(tab);
@@ -146,7 +175,6 @@ function App() {
     setCurrentTab(tab);
   }, []);
 
-  const [showBackToTop, setShowBackToTop] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       const container = document.querySelector('.tools-container');
@@ -168,28 +196,6 @@ function App() {
     }
   };
 
-  // Additional Settings
-  const [isCompact, setIsCompact] = useLocalStorageState('hub_compact', false, 'boolean');
-  const [hideBookmarkUrls, setHideBookmarkUrls] = useLocalStorageState('hub_hide_bookmark_urls', false, 'boolean');
-  const [hideBookmarkIcons, setHideBookmarkIcons] = useLocalStorageState('hub_hide_bookmark_icons', false, 'boolean');
-  const [showStats, setShowStats] = useLocalStorageState('hub_show_stats', true, 'boolean');
-  const [autoFocusSearch, setAutoFocusSearch] = useLocalStorageState('hub_auto_focus_search', false, 'boolean');
-  const [openInNewTab, setOpenInNewTab] = useLocalStorageState('hub_open_newtab', true, 'boolean');
-
-  // Visual Settings
-  const [disableGlass, setDisableGlass] = useLocalStorageState('hub_disable_glass', false, 'boolean');
-  const [disableAnimations, setDisableAnimations] = useLocalStorageState('hub_disable_animations', false, 'boolean');
-  const [reducedMotion, setReducedMotion] = useLocalStorageState('hub_reduced_motion', false, 'boolean');
-  const [confirmDelete, setConfirmDelete] = useLocalStorageState('hub_confirm_delete', true, 'boolean');
-  const [enableHoverEffects, setEnableHoverEffects] = useLocalStorageState('hub_enable_hover_effects', true, 'boolean');
-
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
-  const [editingLink, setEditingLink] = useState(null);
-  const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [deferredPrompt, setDeferredPrompt] = useState(null);
-
   useEffect(() => {
     const handleBeforeInstallPrompt = (e) => {
       e.preventDefault();
@@ -204,9 +210,6 @@ function App() {
     setRefreshTrigger(prev => prev + 1);
     setTimeout(() => setIsRefreshing(false), 500);
   };
-
-  const touchStart = React.useRef(0);
-  const touchEnd = React.useRef(0);
 
   const handleTouchStart = (e) => {
     const container = document.querySelector('.tools-container');
