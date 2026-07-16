@@ -116,7 +116,7 @@ const ManualStatsView = () => {
       `}</style>
 
       <div className="toolbox-page-header" style={{ marginBottom: '2rem' }}>
-        <h2>System Guide & Analytics</h2>
+        <h2>Analytics</h2>
         <p>Interactive diagnostics and technical manual powered by HTMX client routing.</p>
       </div>
 

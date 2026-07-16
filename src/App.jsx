@@ -9,10 +9,102 @@ import SettingsModal from './components/SettingsModal';
 import BookmarkModal from './components/BookmarkModal';
 import { storage } from './utils/storage';
 import { useLocalStorageState } from './utils/hooks';
+import necsLinks from '../data/necs_links.json';
+import { pushToPocketBase } from './utils/pocketbase';
 
 function App() {
   const [appName, setAppName] = useLocalStorageState('hub_app_name', 'NECS Bookmarks');
   const [currentTab, setCurrentTab] = useState('bookmarks');
+
+  // Automatic background sync from JSON to Local Storage and PocketBase
+  useEffect(() => {
+    const syncJsonToStorageAndPB = async () => {
+      try {
+        let storedLinks = storage.getJSON('hub_links_necs');
+        let localUpdated = false;
+
+        if (!storedLinks) {
+          // If no stored links, initialize with JSON links
+          storedLinks = necsLinks.map((l, index) => ({
+            id: l.id || `l-necs-${index}-${Date.now()}`,
+            ...l,
+            is_pinned: l.is_pinned || false
+          }));
+          storage.setJSON('hub_links_necs', storedLinks);
+          localUpdated = true;
+        } else {
+          // Merge/update logic
+          const updatedLinks = [...storedLinks];
+          necsLinks.forEach((jsonLink) => {
+            const existingIdx = updatedLinks.findIndex(l => l.id === jsonLink.id);
+            if (existingIdx === -1) {
+              // Add new link from JSON
+              updatedLinks.push({
+                ...jsonLink,
+                is_pinned: jsonLink.is_pinned || false
+              });
+              localUpdated = true;
+            } else {
+              // Check if modified
+              const existingLink = updatedLinks[existingIdx];
+              const fieldsToCompare = ['title', 'url', 'category', 'icon'];
+              let isModified = false;
+
+              for (const field of fieldsToCompare) {
+                if (existingLink[field] !== jsonLink[field]) {
+                  isModified = true;
+                  break;
+                }
+              }
+
+              // Compare array of urls
+              if (!isModified) {
+                const existingUrls = existingLink.urls || [];
+                const jsonUrls = jsonLink.urls || [];
+                if (JSON.stringify(existingUrls) !== JSON.stringify(jsonUrls)) {
+                  isModified = true;
+                }
+              }
+
+              if (isModified) {
+                updatedLinks[existingIdx] = {
+                  ...existingLink,
+                  ...jsonLink
+                };
+                localUpdated = true;
+              }
+            }
+          });
+
+          if (localUpdated) {
+            storage.setJSON('hub_links_necs', updatedLinks);
+            setRefreshTrigger(prev => prev + 1);
+          }
+        }
+
+        // If local storage was updated (new or modified JSON bookmarks), and PocketBase is configured, sync to PocketBase in background!
+        if (localUpdated) {
+          const pbUrl = storage.get('hub_pb_url');
+          if (pbUrl) {
+            const config = {
+              url: pbUrl,
+              collection: storage.get('hub_pb_collection') || 'bookmarks',
+              email: storage.get('hub_pb_email') || '',
+              password: storage.get('hub_pb_password') || '',
+              isAdmin: storage.getBoolean('hub_pb_is_admin', false)
+            };
+            const currentLinks = storage.getJSON('hub_links_necs') || [];
+            await pushToPocketBase(config, currentLinks);
+            console.log('Successfully auto-synchronized updated JSON bookmarks to PocketBase.');
+          }
+        }
+      } catch (err) {
+        console.error('Error in automated JSON to PocketBase background sync:', err);
+      }
+    };
+
+    syncJsonToStorageAndPB();
+  }, []);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchActive, setSearchActive] = useState(false);
   const [theme, setTheme] = useLocalStorageState('hub_theme', 'light');

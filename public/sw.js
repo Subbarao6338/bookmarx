@@ -406,29 +406,10 @@ function handleStatsRequest(links) {
   else if (score >= 70) { grade = 'C'; gradeColor = '#FF9800'; }
   else if (score >= 60) { grade = 'D'; gradeColor = '#FF9800'; }
 
-  const subNav = `
-    <div class="pill-group" style="justify-content: center; gap: 10px; margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; width: 100%;">
-      <button class="pill"
-              hx-get="/api/manual?section=overview"
-              hx-target="#manual-stats-content"
-              hx-swap="innerHTML">
-        <span class="material-icons mr-10" style="font-size: 1.1rem">explore</span> Overview
-      </button>
-      <button class="pill active"
-              hx-post="/api/stats"
-              hx-vals="js:{links: localStorage.getItem('hub_links_necs') || '[]'}"
-              hx-target="#manual-stats-content"
-              hx-swap="innerHTML">
-        <span class="material-icons mr-10" style="font-size: 1.1rem">bar_chart</span> Storage Stats
-      </button>
-    </div>
-  `;
-
   // Dynamic suggestion list with Alpine.js filtering/dismiss behavior
   const suggestionsArrayJson = JSON.stringify(deductMsgs.map((m, idx) => ({ id: idx, text: m, hidden: false })));
 
   const html = `
-    ${subNav}
     <div class="stats-section fade-in" style="text-align: left;">
       <div class="glass-card" style="padding: 2rem; border-radius: var(--radius-lg); margin-bottom: 1.5rem; border: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
         <div>
