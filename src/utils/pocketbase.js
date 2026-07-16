@@ -9,8 +9,9 @@ import necsLinks from '../../data/necs_links.json';
 export async function testPBConnection(url) {
   try {
     const pb = new PocketBase(url);
+    pb.autoCancellation(false);
     const health = await pb.health.check();
-    return health.code === 200;
+    return health.status === 200 || health.code === 200;
   } catch (error) {
     console.error('PocketBase health check failed:', error);
     return false;
@@ -26,43 +27,39 @@ export async function testPBConnection(url) {
  * @param {boolean} isAdmin - Whether to authenticate as superuser/admin
  */
 async function authenticate(pb, email, password, isAdmin) {
-  if (!email || !password) {
+  const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+  const trimmedPassword = typeof password === 'string' ? password.trim() : '';
+  if (!trimmedEmail || !trimmedPassword) {
     console.log('Skipping PocketBase authentication: Email or password is not provided.');
     return;
   }
 
-  console.log(`Attempting PocketBase authentication for email: ${email} (as Admin: ${isAdmin})`);
+  console.log(`Attempting PocketBase authentication for email: ${trimmedEmail} (as Admin: ${isAdmin})`);
   if (isAdmin) {
     try {
-      // Try PocketBase legacy pb.admins first
-      if (pb.admins && typeof pb.admins.authWithPassword === 'function') {
-        await pb.admins.authWithPassword(email, password);
-        console.log('Successfully authenticated as legacy admin/superuser.');
-        return;
-      }
-    } catch (e1) {
-      console.warn('PocketBase pb.admins authentication failed, trying _superusers collection:', e1.message);
-    }
-
-    try {
-      // Try PocketBase modern _superusers collection
-      await pb.collection('_superusers').authWithPassword(email, password);
+      // Try PocketBase modern _superusers collection first (v0.23+)
+      await pb.collection('_superusers').authWithPassword(trimmedEmail, trimmedPassword);
       console.log('Successfully authenticated as superuser via _superusers collection.');
       return;
-    } catch (e2) {
-      console.warn('PocketBase _superusers collection authentication failed:', e2.message);
-      // Fallback to regular users collection only as a last resort
+    } catch (e1) {
+      console.warn('PocketBase _superusers collection authentication failed, trying legacy pb.admins:', e1.message);
       try {
-        await pb.collection('users').authWithPassword(email, password);
-        console.log('Successfully authenticated via users collection fallback.');
-        return;
-      } catch (e3) {
-        throw new Error(`Admin authentication failed. Superuser errors: [Admins: ${e2.message}]. Fallback error: [Users: ${e3.message}].`);
+        // Fallback to PocketBase legacy pb.admins if available on client and server
+        if (pb.admins && typeof pb.admins.authWithPassword === 'function') {
+          await pb.admins.authWithPassword(trimmedEmail, trimmedPassword);
+          console.log('Successfully authenticated as legacy admin/superuser.');
+          return;
+        } else {
+          throw new Error('Legacy pb.admins helper is not available in current PocketBase client SDK.');
+        }
+      } catch (e2) {
+        console.warn('PocketBase legacy pb.admins authentication failed:', e2.message);
+        throw new Error(`Admin/Superuser authentication failed. Modern error: [${e1.message}]. Legacy error: [${e2.message}].`);
       }
     }
   } else {
     try {
-      await pb.collection('users').authWithPassword(email, password);
+      await pb.collection('users').authWithPassword(trimmedEmail, trimmedPassword);
       console.log('Successfully authenticated as standard user via users collection.');
     } catch (error) {
       throw new Error(`Regular user authentication failed: ${error.message}`);
@@ -82,7 +79,15 @@ export async function pushToPocketBase(config, localLinks) {
 
   try {
     const pb = new PocketBase(url);
-    await authenticate(pb, email, password, isAdmin);
+    pb.autoCancellation(false);
+
+    const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+    const trimmedPassword = typeof password === 'string' ? password.trim() : '';
+    if (trimmedEmail && trimmedPassword) {
+      await authenticate(pb, trimmedEmail, trimmedPassword, isAdmin);
+    } else {
+      console.log('Skipping PocketBase authentication: Credentials are not provided.');
+    }
 
     const pbCollection = pb.collection(collection);
 
@@ -152,7 +157,15 @@ export async function pullFromPocketBase(config, currentLocalLinks) {
 
   try {
     const pb = new PocketBase(url);
-    await authenticate(pb, email, password, isAdmin);
+    pb.autoCancellation(false);
+
+    const trimmedEmail = typeof email === 'string' ? email.trim() : '';
+    const trimmedPassword = typeof password === 'string' ? password.trim() : '';
+    if (trimmedEmail && trimmedPassword) {
+      await authenticate(pb, trimmedEmail, trimmedPassword, isAdmin);
+    } else {
+      console.log('Skipping PocketBase authentication: Credentials are not provided.');
+    }
 
     const pbCollection = pb.collection(collection);
     const pbRecords = await pbCollection.getFullList();
