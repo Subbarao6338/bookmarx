@@ -803,6 +803,54 @@
     "url": "https://perchance.org/omni-magellan",
     "urls": ["https://perchance.org/omni-magellan"],
     "category": "Perchance"
+  },
+  {
+    "title": "Wan Video",
+    "url": "https://create.wan.video/",
+    "urls": ["https://create.wan.video/"],
+    "category": "AI"
+  },
+  {
+    "title": "Qwen-Image-Edit-2511 Model",
+    "url": "https://huggingface.co/Qwen/Qwen-Image-Edit-2511",
+    "urls": ["https://huggingface.co/Qwen/Qwen-Image-Edit-2511"],
+    "category": "Huggingface"
+  },
+  {
+    "title": "Qwen-Image-Edit-2511 Space",
+    "url": "https://huggingface.co/spaces/Qwen/Qwen-Image-Edit-2511",
+    "urls": ["https://huggingface.co/spaces/Qwen/Qwen-Image-Edit-2511"],
+    "category": "Huggingface"
+  },
+  {
+    "title": "Pro-Realism-Edit-Studio",
+    "url": "https://huggingface.co/spaces/Sneak-Moose/Pro-Realism-Edit-Studio",
+    "urls": ["https://huggingface.co/spaces/Sneak-Moose/Pro-Realism-Edit-Studio"],
+    "category": "Huggingface"
+  },
+  {
+    "title": "Qwen-Image-Edit-2511-LoRAs-Fast",
+    "url": "https://huggingface.co/spaces/prithivMLmods/Qwen-Image-Edit-2511-LoRAs-Fast",
+    "urls": ["https://huggingface.co/spaces/prithivMLmods/Qwen-Image-Edit-2511-LoRAs-Fast"],
+    "category": "Huggingface"
+  },
+  {
+    "title": "NSFW-Qwen-Image-Edit-2511-LoRAs-NoRestric",
+    "url": "https://huggingface.co/spaces/crimesagainstmedia/NSFW-Qwen-Image-Edit-2511-LoRAs-NoRestric",
+    "urls": ["https://huggingface.co/spaces/crimesagainstmedia/NSFW-Qwen-Image-Edit-2511-LoRAs-NoRestric"],
+    "category": "Porn"
+  },
+  {
+    "title": "Qwen-Image-Edit-Rapid-AIO-NSFW-v23",
+    "url": "https://huggingface.co/spaces/signsur4739379373/qwen-image-edit-rapid-aio-nsfw-v23?not-for-all-audiences=true",
+    "urls": ["https://huggingface.co/spaces/signsur4739379373/qwen-image-edit-rapid-aio-nsfw-v23?not-for-all-audiences=true"],
+    "category": "Porn"
+  },
+  {
+    "title": "Meta AI",
+    "url": "https://meta.ai/",
+    "urls": ["https://meta.ai/"],
+    "category": "AI"
   }
 ]
 
