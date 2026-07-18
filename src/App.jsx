@@ -10,7 +10,6 @@ import BookmarkModal from './components/BookmarkModal';
 import { storage } from './utils/storage';
 import { useLocalStorageState } from './utils/hooks';
 import necsLinks from '../data/necs_links.json';
-import { pushToPocketBase } from './utils/pocketbase';
 
 function App() {
   // All States & Refs declared at the top to prevent temporal dead zone (TDZ) errors
@@ -49,9 +48,9 @@ function App() {
   const touchStart = React.useRef(0);
   const touchEnd = React.useRef(0);
 
-  // Automatic background sync from JSON to Local Storage and PocketBase
+  // Automatic background sync from JSON to Local Storage
   useEffect(() => {
-    const syncJsonToStorageAndPB = async () => {
+    const syncJsonToStorage = async () => {
       try {
         let storedLinks = storage.getJSON('hub_links_necs');
         let localUpdated = false;
@@ -114,29 +113,12 @@ function App() {
             setRefreshTrigger(prev => prev + 1);
           }
         }
-
-        // If local storage was updated (new or modified JSON bookmarks), and PocketBase is configured, sync to PocketBase in background!
-        if (localUpdated) {
-          const pbUrl = storage.get('hub_pb_url');
-          if (pbUrl) {
-            const config = {
-              url: pbUrl,
-              collection: storage.get('hub_pb_collection') || 'bookmarks',
-              email: storage.get('hub_pb_email') || '',
-              password: storage.get('hub_pb_password') || '',
-              isAdmin: storage.getBoolean('hub_pb_is_admin', false)
-            };
-            const currentLinks = storage.getJSON('hub_links_necs') || [];
-            await pushToPocketBase(config, currentLinks);
-            console.log('Successfully auto-synchronized updated JSON bookmarks to PocketBase.');
-          }
-        }
       } catch (err) {
-        console.error('Error in automated JSON to PocketBase background sync:', err);
+        console.error('Error in automated JSON background sync:', err);
       }
     };
 
-    syncJsonToStorageAndPB();
+    syncJsonToStorage();
   }, []);
 
   const setTab = React.useCallback((tab, skipHistory = false) => {
