@@ -1,15 +1,13 @@
-import React, { useState, useRef, memo, useCallback } from 'react';
+import React, { useRef, memo, useCallback } from 'react';
 import SafeHighlight from './SafeHighlight';
 import BookmarkIcon from './BookmarkIcon';
 
 const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onLongPress, categoryIcon, hideIcons, hideUrls, searchQuery, noAnimation }) => {
   const pressTimer = useRef(null);
-  const [isPressing, setIsPressing] = useState(false);
   const isLongPressActive = useRef(false);
   const cardRef = useRef(null);
 
   const cancelPress = useCallback(() => {
-    setIsPressing(false);
     if (pressTimer.current) {
       clearTimeout(pressTimer.current);
       pressTimer.current = null;
@@ -26,11 +24,9 @@ const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onLongPress, catego
 
     cancelPress();
     isLongPressActive.current = false;
-    setIsPressing(true);
     pressTimer.current = setTimeout(() => {
       isLongPressActive.current = true;
       onLongPress(coords);
-      setIsPressing(false);
     }, 500);
   }, [cancelPress, onLongPress]);
 
@@ -51,7 +47,7 @@ const BookmarkCard = memo(({ link, idx, openInNewTab, onPin, onLongPress, catego
   return (
     <div
       ref={cardRef}
-      className={`card ${noAnimation ? 'no-animation' : ''} ${isPressing ? 'is-pressing' : ''}`}
+      className={`card ${noAnimation ? 'no-animation' : ''}`}
       style={{'--delay': idx}}
       onClick={handleClick}
       onMouseDown={startPress}

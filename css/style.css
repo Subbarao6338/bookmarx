@@ -184,7 +184,7 @@ body {
   background: var(--surface-hover);
 }
 
-.card.is-pressing {
+.card:active {
   transform: scale(0.95);
   box-shadow: var(--shadow-sm);
   border-color: var(--primary);
@@ -953,6 +953,291 @@ input.pill:focus {
 
 .desktop-only { display: flex !important; }
 .mobile-only { display: none !important; }
+
+/* Desktop Sidebar Styling (only visible on desktop viewports) */
+.sidebar {
+  display: none !important;
+}
+
+@media (min-width: 769px) {
+  .desktop-only { display: flex !important; }
+  .mobile-only { display: none !important; }
+
+  /* Hide mobile-specific bars on desktop viewports */
+  .top-bar {
+    display: none !important;
+  }
+  .tab-bar {
+    display: none !important;
+  }
+
+  .app-layout {
+    flex-direction: row;
+    align-items: stretch;
+    overflow: hidden;
+  }
+
+  .sidebar {
+    display: flex !important;
+    flex-direction: column;
+    width: 280px;
+    height: 100vh;
+    background: var(--surface-solid);
+    border-right: 1px solid var(--border);
+    padding: 1.5rem;
+    gap: 1.5rem;
+    flex-shrink: 0;
+    box-shadow: var(--shadow-md);
+    z-index: 30;
+    justify-content: flex-start;
+  }
+
+  .sidebar-brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+    margin-bottom: 0.5rem;
+  }
+
+  .sidebar-logo-wrapper {
+    background: var(--primary-glow);
+    padding: 8px;
+    border-radius: var(--radius-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+  }
+
+  .sidebar-logo-img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .sidebar-title {
+    font-size: 1.25rem;
+    font-weight: 800;
+    margin: 0;
+    letter-spacing: -0.02em;
+    color: var(--on-surface);
+  }
+
+  .sidebar-add-btn {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.95rem;
+    padding: 12px;
+  }
+
+  .sidebar-search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar-search-input {
+    width: 100%;
+    padding: 12px 12px 12px 40px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border);
+    background: var(--brand-bg-light);
+    font-family: inherit;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+  }
+
+  .sidebar-search-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: var(--surface-solid);
+    box-shadow: 0 4px 12px var(--primary-glow);
+  }
+
+  .sidebar-search-icon {
+    position: absolute;
+    left: 12px;
+    color: var(--text-muted);
+    font-size: 1.25rem !important;
+  }
+
+  .sidebar-search-clear {
+    position: absolute;
+    right: 10px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+  }
+
+  .sidebar-search-clear .material-icons {
+    font-size: 1.1rem !important;
+  }
+
+  .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+  }
+
+  .sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    border-radius: var(--radius-md);
+    border: none;
+    background: transparent;
+    color: var(--text-muted);
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s var(--transition-bounce);
+    text-align: left;
+    width: 100%;
+  }
+
+  .sidebar-nav-item:hover {
+    background: var(--primary-glow);
+    color: var(--primary);
+  }
+
+  .sidebar-nav-item.active {
+    background: var(--primary);
+    color: var(--on-primary);
+  }
+
+  .sidebar-theme-switcher {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .sidebar-section-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+  }
+
+  .sidebar-section-header .material-icons-outlined {
+    font-size: 1.1rem !important;
+  }
+
+  .sidebar-section-title {
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .sidebar-theme-buttons {
+    display: flex;
+    gap: 6px;
+    width: 100%;
+  }
+
+  .sidebar-theme-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: var(--brand-bg-light);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .sidebar-theme-btn:hover {
+    border-color: var(--primary);
+    color: var(--primary);
+    background: var(--primary-glow);
+  }
+
+  .sidebar-theme-btn.active {
+    border-color: var(--primary);
+    color: var(--on-primary);
+    background: var(--primary);
+  }
+
+  .sidebar-profile {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .profile-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: var(--on-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.95rem;
+    flex-shrink: 0;
+  }
+
+  .profile-info {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .profile-name {
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: var(--on-surface);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .profile-email {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .profile-badge {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--brand-accent);
+    margin-top: 2px;
+  }
+
+  .main-content {
+    flex: 1;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .tools-container {
+    margin: 0 auto;
+    border-radius: 0;
+    height: 100%;
+    border-top: none;
+    border-bottom: none;
+  }
+}
 
 @media (max-width: 768px) {
   .desktop-only { display: none !important; }
