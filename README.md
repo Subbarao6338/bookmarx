@@ -50,6 +50,14 @@ The project is structured as a modular React SPA with auxiliary JavaScript utili
 ├── data/                  # Static seeded bookmark data
 │   ├── necs_cat.json      # Categories seed configuration
 │   └── necs_links.json    # Bookmarks seed collection
+├── legacy/                # Unused/legacy modules moved out of active source tree
+│   ├── api.js                # Legacy mock/JSON-mode API wrapper
+│   ├── constants.js          # Legacy polling/sensor visual constants
+│   ├── dataAnalysis.js       # Outlier/anomaly detection and data quality suites
+│   ├── helpers.js            # Legacy download/clipboard utility wrappers
+│   ├── panchangam.js         # Telugu Panchangam astronomical calculations
+│   ├── regexGen.js           # Lexer / parser to build robust regexes
+│   └── textSplitter.js       # RAG context document splitter
 ├── public/                # Static public assets and service workers
 ├── src/                   # Main source code
 │   ├── components/        # Reusable React components
@@ -59,12 +67,9 @@ The project is structured as a modular React SPA with auxiliary JavaScript utili
 │   │   ├── BookmarksView.jsx     # Main grid containing lists and categories
 │   │   ├── ManualStatsView.jsx   # HTMX-powered Analytics / Diagnostics page
 │   │   └── SettingsModal.jsx     # Core settings config panel
-│   ├── utils/             # Independent core logical modules (RAG, Math, Astronomy)
-│   │   ├── dataAnalysis.js       # Outlier/anomaly detection and data quality suites
-│   │   ├── panchangam.js         # Telugu Panchangam astronomical calculations
-│   │   ├── regexGen.js           # Lexer / parser to build robust regexes
-│   │   ├── storage.js            # Safe wrapper around LocalStorage
-│   │   └── textSplitter.js       # RAG context document splitter
+│   ├── utils/             # Core logical modules
+│   │   ├── hooks.js              # Custom persistent local storage state hooks
+│   │   └── storage.js            # Safe wrapper around LocalStorage
 │   ├── App.jsx            # Parent root layout and global state controller
 │   └── main.jsx           # App initialization, service-worker register, and entry-point
 └── tests/                 # Playwright test suite (smoke & utility validation)
@@ -82,9 +87,12 @@ NECS Bookmarks relies on React's native state-hook pattern consolidated at the p
 
 ### ⚙️ Utility Modules
 
-The application includes four highly optimized standalone utilities located in `src/utils/`:
+Core application utilities are located in `src/utils/`:
+- **State Serialization (`hooks.js`)**: Syncs state with LocalStorage.
+- **Storage Protection (`storage.js`)**: Safe wrapper around browser database operations.
 
-- **Data Quality Engine & Anomaly Detection (`dataAnalysis.js`)**: Ported from Python's statistical stack (`Scikit-Learn` and `Great Expectations`). It evaluates multidimensional data arrays via Mahalanobis Distance for multivariate outlier detection and assesses statistical null-deviations.
-- **Astronomical Telugu Panchangam (`panchangam.js`)**: Calculates Julian dates, Ayanamsa corrections, solar/lunar longitudes, sunrise/sunset times, and Telugu planetary indicators based on geographic coordinates.
-- **Heuristic Pattern Builder (`regexGen.js`)**: Ported from Java implementations to analyze raw text structures (alphabets, cases, numbers, layouts) and compile exact regular expression structures.
-- **LangChain-inspired Text Splitter (`textSplitter.js`)**: Implementation of `RecursiveCharacterTextSplitter` which recursively chunk-splits long document inputs using a prioritization of separators (`\n\n`, `\n`, space) and custom overlap margins.
+Legacy, unused analytical/astronomical utility modules have been moved to the `legacy/` directory under the root of the project to keep the active codebase clean:
+- **Data Quality Engine & Anomaly Detection (`legacy/dataAnalysis.js`)**: Ported from Python's statistical stack (`Scikit-Learn` and `Great Expectations`). It evaluates multidimensional data arrays via Mahalanobis Distance for multivariate outlier detection and assesses statistical null-deviations.
+- **Astronomical Telugu Panchangam (`legacy/panchangam.js`)**: Calculates Julian dates, Ayanamsa corrections, solar/lunar longitudes, sunrise/sunset times, and Telugu planetary indicators based on geographic coordinates.
+- **Heuristic Pattern Builder (`legacy/regexGen.js`)**: Ported from Java implementations to analyze raw text structures (alphabets, cases, numbers, layouts) and compile exact regular expression structures.
+- **LangChain-inspired Text Splitter (`legacy/textSplitter.js`)**: Implementation of `RecursiveCharacterTextSplitter` which recursively chunk-splits long document inputs using a prioritization of separators (`\n\n`, `\n`, space) and custom overlap margins.
