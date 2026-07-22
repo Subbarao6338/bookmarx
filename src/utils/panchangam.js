@@ -157,88 +157,121 @@ const getLuckyDetails = (rasiIdx) => {
 };
 
 export const calculatePanchangam = (dateStr, timeStr, lat, lng, tz) => {
-    const dt = new Date(`${dateStr}T${timeStr}`);
-    const jdLocal = getJulianDate(dt);
-    const browserOffsetHours = -dt.getTimezoneOffset() / 60;
-    const jdUT = jdLocal - (browserOffsetHours / 24.0);
-
-    const sunLong = getSunLongitude(jdUT);
-    const moonLong = getMoonLongitude(jdUT);
-    const ayanamsa = getAyanamsa(jdUT);
-
-    const nirayanaMoon = rev(moonLong - ayanamsa);
-    const nirayanaSun = rev(sunLong - ayanamsa);
-
-    // Tithi
-    let diff = moonLong - sunLong;
-    if (diff < 0) diff += 360;
-    const tithiIdx = Math.floor(diff / 12);
-
-    // Nakshatra
-    const nakIdx = Math.floor(nirayanaMoon / (360/27));
-    const pada = Math.floor((nirayanaMoon % (360/27)) / (360/108)) + 1;
-
-    // Rasi
-    const rasiIdx = Math.floor(nirayanaMoon / 30);
-
-    // Yoga
-    let yogaSum = moonLong + sunLong;
-    const yogaIdx = Math.floor(rev(yogaSum - 2 * ayanamsa) / (360/27));
-
-    // Karana
-    const karanaIdx = Math.floor(diff / 6);
-
-    // Vara
-    const jdAdjusted = jdUT + (tz / 24.0);
-    const dayIdx = (Math.floor(jdAdjusted + 0.5) + 1) % 7;
-
-    // Samvatsara
-    const year = dt.getFullYear();
-    const samvatsaraIdx = (year - 1986 + 37 + 60) % 60;
-
-    // Sunrise/Sunset
-    const { sunrise, sunset } = getSunriseSunset(dt, lat, lng, tz);
-
-    // Kalams
-    let rahukalam = "--:--", yamagandam = "--:--", gulikalam = "--:--";
-    if (sunrise && sunset) {
-        const dayLength = sunset.getTime() - sunrise.getTime();
-        const part = dayLength / 8;
-
-        const getKalam = (parts) => {
-            const start = new Date(sunrise.getTime() + parts[dayIdx] * part);
-            const end = new Date(start.getTime() + part);
-            return `${formatTime(start)} - ${formatTime(end)}`;
-        };
-
-        const rahuParts = [7, 1, 6, 4, 5, 3, 2];
-        const yamaParts = [4, 3, 2, 1, 0, 6, 5];
-        const guliParts = [6, 5, 4, 3, 2, 1, 0];
-
-        rahukalam = getKalam(rahuParts);
-        yamagandam = getKalam(yamaParts);
-        gulikalam = getKalam(guliParts);
+    let dt = new Date(`${dateStr}T${timeStr}`);
+    if (isNaN(dt.getTime())) {
+        // Fallback to current date/time if malformed
+        dt = new Date();
     }
 
-    const lucky = getLuckyDetails(rasiIdx);
+    // Default parameters if invalid or malformed
+    const safeLat = typeof lat === 'number' && !isNaN(lat) ? lat : 17.3850;
+    const safeLng = typeof lng === 'number' && !isNaN(lng) ? lng : 78.4867;
+    const safeTz = typeof tz === 'number' && !isNaN(tz) ? tz : 5.5;
 
-    return {
-        samvatsara: SAMVATSARAS[samvatsaraIdx],
-        tithi: TITHIS[tithiIdx] || "Unknown",
-        nakshatra: NAKSHATRAS[nakIdx] || "Unknown",
-        pada: pada,
-        rasi: RASIS[rasiIdx] || "Unknown",
-        yoga: YOGAS[yogaIdx] || "Unknown",
-        karana: KARANAS[karanaIdx] || "Unknown",
-        vara: VARAS[dayIdx],
-        sunrise: formatTime(sunrise),
-        sunset: formatTime(sunset),
-        rahukalam: rahukalam,
-        yamagandam: yamagandam,
-        gulikalam: gulikalam,
-        luckyColor: lucky.color,
-        luckyNumber: lucky.number,
-        luckyGem: lucky.gem,
-        luckyDirection: lucky.direction
-    };
+    try {
+        const jdLocal = getJulianDate(dt);
+        const browserOffsetHours = -dt.getTimezoneOffset() / 60;
+        const jdUT = jdLocal - (browserOffsetHours / 24.0);
+
+        const sunLong = getSunLongitude(jdUT);
+        const moonLong = getMoonLongitude(jdUT);
+        const ayanamsa = getAyanamsa(jdUT);
+
+        const nirayanaMoon = rev(moonLong - ayanamsa);
+        const nirayanaSun = rev(sunLong - ayanamsa);
+
+        // Tithi
+        let diff = moonLong - sunLong;
+        if (diff < 0) diff += 360;
+        const tithiIdx = Math.floor(diff / 12) % 30;
+
+        // Nakshatra
+        const nakIdx = Math.floor(nirayanaMoon / (360/27)) % 27;
+        const pada = Math.floor((nirayanaMoon % (360/27)) / (360/108)) + 1;
+
+        // Rasi
+        const rasiIdx = Math.floor(nirayanaMoon / 30) % 12;
+
+        // Yoga
+        let yogaSum = moonLong + sunLong;
+        const yogaIdx = Math.floor(rev(yogaSum - 2 * ayanamsa) / (360/27)) % 27;
+
+        // Karana
+        const karanaIdx = Math.floor(diff / 6) % 60;
+
+        // Vara
+        const jdAdjusted = jdUT + (safeTz / 24.0);
+        const dayIdx = (Math.floor(jdAdjusted + 0.5) + 1) % 7;
+
+        // Samvatsara
+        const year = dt.getFullYear();
+        const samvatsaraIdx = Math.abs((year - 1986 + 37 + 60) % 60);
+
+        // Sunrise/Sunset
+        const { sunrise, sunset } = getSunriseSunset(dt, safeLat, safeLng, safeTz);
+
+        // Kalams
+        let rahukalam = "--:--", yamagandam = "--:--", gulikalam = "--:--";
+        if (sunrise && sunset && !isNaN(sunrise.getTime()) && !isNaN(sunset.getTime())) {
+            const dayLength = sunset.getTime() - sunrise.getTime();
+            const part = dayLength / 8;
+
+            const getKalam = (parts) => {
+                const start = new Date(sunrise.getTime() + parts[dayIdx] * part);
+                const end = new Date(start.getTime() + part);
+                return `${formatTime(start)} - ${formatTime(end)}`;
+            };
+
+            const rahuParts = [7, 1, 6, 4, 5, 3, 2];
+            const yamaParts = [4, 3, 2, 1, 0, 6, 5];
+            const guliParts = [6, 5, 4, 3, 2, 1, 0];
+
+            rahukalam = getKalam(rahuParts);
+            yamagandam = getKalam(yamaParts);
+            gulikalam = getKalam(guliParts);
+        }
+
+        const lucky = getLuckyDetails(rasiIdx);
+
+        return {
+            samvatsara: SAMVATSARAS[samvatsaraIdx] || "Unknown",
+            tithi: TITHIS[tithiIdx] || "Unknown",
+            nakshatra: NAKSHATRAS[nakIdx] || "Unknown",
+            pada: isNaN(pada) ? 1 : pada,
+            rasi: RASIS[rasiIdx] || "Unknown",
+            yoga: YOGAS[yogaIdx] || "Unknown",
+            karana: KARANAS[karanaIdx] || "Unknown",
+            vara: VARAS[dayIdx] || "Unknown",
+            sunrise: formatTime(sunrise),
+            sunset: formatTime(sunset),
+            rahukalam: rahukalam,
+            yamagandam: yamagandam,
+            gulikalam: gulikalam,
+            luckyColor: lucky.color,
+            luckyNumber: lucky.number,
+            luckyGem: lucky.gem,
+            luckyDirection: lucky.direction
+        };
+    } catch (e) {
+        console.error("Panchangam calculation failed:", e);
+        return {
+            samvatsara: "Unknown",
+            tithi: "Unknown",
+            nakshatra: "Unknown",
+            pada: 1,
+            rasi: "Unknown",
+            yoga: "Unknown",
+            karana: "Unknown",
+            vara: "Unknown",
+            sunrise: "--:--",
+            sunset: "--:--",
+            rahukalam: "--:--",
+            yamagandam: "--:--",
+            gulikalam: "--:--",
+            luckyColor: "N/A",
+            luckyNumber: "N/A",
+            luckyGem: "N/A",
+            luckyDirection: "N/A"
+        };
+    }
 };

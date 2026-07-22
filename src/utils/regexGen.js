@@ -6,18 +6,44 @@
 export const generateRegex = (input) => {
     if (!input) return '';
 
-    // Basic heuristic-based regex generation
-    let pattern = input
-        .replace(/[a-z]/g, '[a-z]')
-        .replace(/[A-Z]/g, '[A-Z]')
-        .replace(/\d/g, '\\d')
-        .replace(/\s/g, '\\s');
+    // Truncate to prevent long inputs from creating extremely complex regexes or ReDoS issues
+    const safeInput = typeof input === 'string' ? input.slice(0, 100) : String(input).slice(0, 100);
+
+    // Escape special regex characters so they don't break the regex pattern engine
+    let pattern = '';
+    for (let i = 0; i < safeInput.length; i++) {
+        const char = safeInput[i];
+        if (/[a-z]/.test(char)) {
+            pattern += '[a-z]';
+        } else if (/[A-Z]/.test(char)) {
+            pattern += '[A-Z]';
+        } else if (/\d/.test(char)) {
+            pattern += '\\d';
+        } else if (/\s/.test(char)) {
+            pattern += '\\s';
+        } else {
+            // Escape any other characters (e.g. punctuation, symbols, brackets) to be matched literally
+            pattern += '\\' + char;
+        }
+    }
 
     // Grouping repetitions
-    pattern = pattern.replace(/(\[a-z\])+/g, (match) => `[a-z]{${match.length / 5}}`);
-    pattern = pattern.replace(/(\[A-Z\])+/g, (match) => `[A-Z]{${match.length / 5}}`);
-    pattern = pattern.replace(/(\\d)+/g, (match) => `\\d{${match.length / 2}}`);
-    pattern = pattern.replace(/(\\s)+/g, (match) => `\\s{${match.length / 2}}`);
+    pattern = pattern.replace(/(\[a-z\])+/g, (match) => {
+        const repeat = match.length / 5;
+        return repeat > 1 ? `[a-z]{${repeat}}` : '[a-z]';
+    });
+    pattern = pattern.replace(/(\[A-Z\])+/g, (match) => {
+        const repeat = match.length / 5;
+        return repeat > 1 ? `[A-Z]{${repeat}}` : '[A-Z]';
+    });
+    pattern = pattern.replace(/(\\d)+/g, (match) => {
+        const repeat = match.length / 2;
+        return repeat > 1 ? `\\d{${repeat}}` : '\\d';
+    });
+    pattern = pattern.replace(/(\\s)+/g, (match) => {
+        const repeat = match.length / 2;
+        return repeat > 1 ? `\\s{${repeat}}` : '\\s';
+    });
 
     return `^${pattern}$`;
 };
