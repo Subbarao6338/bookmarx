@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Analytics } from '@vercel/analytics/react';
 import Header from './components/Header';
 import TabBar from './components/TabBar';
+import Sidebar from './components/Sidebar';
 import BookmarksView from './components/BookmarksView';
 import ManualStatsView from './components/ManualStatsView';
 import SearchOverlay from './components/SearchOverlay';
@@ -326,6 +327,21 @@ function App() {
   return (
     <div className="app-layout">
       <div className="search-dismiss-overlay" onClick={() => setSearchActive(false)}></div>
+
+      <Sidebar
+        appName={appName}
+        currentTab={currentTab}
+        setTab={setTab}
+        onAddClick={() => { setEditingLink(null); setIsBookmarkOpen(true); }}
+        onSettingsClick={() => setIsSettingsOpen(true)}
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        searchActive={searchActive}
+        setSearchActive={setSearchActive}
+        theme={theme}
+        setTheme={setTheme}
+      />
+
       <main className="main-content">
         <Header
           appName={appName}
