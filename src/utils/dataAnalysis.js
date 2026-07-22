@@ -32,9 +32,26 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
                 const xj = transposed[j];
                 const mi = meanVector[i];
                 const mj = meanVector[j];
-                return math.sum(xi.map((x, idx) => (x - mi) * (xj[idx] - mj))) / (n - 1);
+                const denom = n - 1;
+                if (denom <= 0) return 0;
+                return math.sum(xi.map((x, idx) => (x - mi) * (xj[idx] - mj))) / denom;
             })
         );
+
+        // Check if covariance matrix is valid or if we have singular/all-zero dimensions
+        let isSingular = false;
+        try {
+            const det = math.det(cov);
+            if (Math.abs(det) < 1e-9) {
+                isSingular = true;
+            }
+        } catch (e) {
+            isSingular = true;
+        }
+
+        if (isSingular) {
+            throw new Error("Singular covariance matrix");
+        }
 
         const invCov = math.inv(cov);
 
@@ -61,18 +78,19 @@ export const detectMultivariateAnomalies = (data, contamination = 0.05) => {
             }));
     } catch (e) {
         console.error("Multivariate calculation error:", e);
-        // Fallback to simpler Euclidean Z-score if covariance is singular
+        // Fallback to simpler Euclidean Z-score if covariance is singular or calculation fails
         return matrix.map((row, idx) => {
             let dist = 0;
             row.forEach((val, i) => {
                 const col = matrix.map(r => r[i]);
+                if (col.length === 0) return;
                 const m = math.mean(col);
-                const s = math.std(col) || 1;
+                const s = col.length > 1 ? (math.std(col) || 1) : 1;
                 dist += Math.pow((val - m) / s, 2);
             });
             return { score: Math.sqrt(dist), idx };
         }).sort((a, b) => b.score - a.score)
-          .slice(0, Math.floor(data.length * contamination))
+          .slice(0, Math.max(1, Math.floor(data.length * contamination)))
           .map(s => ({ row: s.idx, data: data[s.idx], score: s.score.toFixed(2) }));
     }
 };
@@ -101,10 +119,10 @@ export const runDataQualitySuite = (data) => {
         const numericValues = values.map(v => parseFloat(v)).filter(v => !isNaN(v));
         if (numericValues.length > 0) {
             const mean = math.mean(numericValues);
-            const std = math.std(numericValues);
+            const std = numericValues.length > 1 ? (math.std(numericValues) || 0) : 0;
             const min = mean - 3 * std;
             const max = mean + 3 * std;
-            const outliers = numericValues.filter(v => v < min || v > max).length;
+            const outliers = std > 0 ? numericValues.filter(v => v < min || v > max).length : 0;
 
             report.push({
                 column: col,
