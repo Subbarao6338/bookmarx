@@ -1,8 +1,8 @@
 import { test, expect } from '@playwright/test';
-import { detectMultivariateAnomalies, runDataQualitySuite, generateSyntheticData } from '../src/utils/dataAnalysis.js';
-import { calculatePanchangam } from '../src/utils/panchangam.js';
-import { generateRegex, testRegex } from '../src/utils/regexGen.js';
-import { RecursiveCharacterTextSplitter } from '../src/utils/textSplitter.js';
+import { detectMultivariateAnomalies, runDataQualitySuite, generateSyntheticData } from '../legacy/dataAnalysis.js';
+import { calculatePanchangam } from '../legacy/panchangam.js';
+import { generateRegex, testRegex } from '../legacy/regexGen.js';
+import { RecursiveCharacterTextSplitter } from '../legacy/textSplitter.js';
 
 test.describe('Data Analysis Utilities (`dataAnalysis.js`)', () => {
   test('detectMultivariateAnomalies - standard multivariate anomaly detection', () => {

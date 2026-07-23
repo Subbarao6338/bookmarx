@@ -1,0 +1,18 @@
+# Folders to ignore on cloning
+legacy/
+tests/
+test-results/
+node_modules/
+dist/
+.vercel/
+.git/
+verification/
+
+# Files to ignore on cloning
+*.png
+*.jpg
+*.jpeg
+*.webp
+*.webm
+*.log
+.DS_Store
